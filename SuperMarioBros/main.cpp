@@ -1,11 +1,30 @@
 #include <SDL.h>
+#include "Program.h"
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <conio.h>
+FPSGauge Program::fpsGauge;
 
 int main(int argc, char* argv[])
 {
-	int s = SDL_Init(SDL_INIT_VIDEO);
-	int i = IMG_Init(IMG_INIT_PNG);
-	int t = TTF_Init();
+	if (!Program::Init()) Program::EmergencyExit();
+	if (!Program::LoadContent()) Program::EmergencyExit();
+	Program::fpsGauge.Start();
+
+	while (!Program::quit)
+	{
+		Program::HandleEvent();
+		Program::HandleAction();
+		Program::ClearRenderer();
+
+
+
+		Program::fpsGauge.DisplayFPS();
+		SDL_RenderPresent(Program::renderer);
+		Program::framesCounter++;
+	}
+
+
+	Program::Exit();
 	return 0;
 }
