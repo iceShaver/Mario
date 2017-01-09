@@ -9,17 +9,18 @@ int main(int argc, char* argv[])
 {
 	if (!Program::Init()) Program::EmergencyExit();
 	if (!Program::LoadContent()) Program::EmergencyExit();
-	Program::fpsGauge.Start();
+	Program::fpsGauge.AverageFPSTimerStart();
 
 	while (!Program::quit)
 	{
+		Program::fpsGauge.currentFPSTimerStart();
 		Program::HandleEvent();
 		Program::HandleAction();
 		Program::ClearRenderer();
 
 
-
-		Program::fpsGauge.DisplayFPS();
+		Program::fpsGauge.DisplayAverageFPS();
+		Program::fpsGauge.DisplayCurrentFPS();
 		SDL_RenderPresent(Program::renderer);
 		Program::framesCounter++;
 	}
