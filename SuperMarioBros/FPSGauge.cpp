@@ -4,6 +4,7 @@
 
 FPSGauge::FPSGauge()
 {
+	frameTime = 1;
 
 }
 
@@ -15,7 +16,7 @@ FPSGauge::~FPSGauge()
 void FPSGauge::DisplayAverageFPS()
 {
 	char text[32];
-	float fps = Program::framesCounter / (averageFPSTimer.GetTime()/1000.f);
+	float fps = Program::framesCounter / (averageFPSTimer.GetTime() / 1000.f);
 	sprintf(text, "AVG FPS: %f", fps);
 	if (!LoadFromRenderedText(text, { 0,0,0 }))
 		printf("Unable to render time texture\n");
@@ -25,8 +26,9 @@ void FPSGauge::DisplayAverageFPS()
 void FPSGauge::DisplayCurrentFPS()
 {
 	char text[32];
-	float fps = currentFPStimer.GetTime()*1000;
-	sprintf(text, "CUR FPS: %f", fps);
+	if (Program::framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
+		currentFPS = 1000 * Config::CURRENT_FPS_UPDATE_INTERVAL / (float)frameTime;
+	sprintf(text, "CUR FPS: %f", currentFPS);
 	if (!LoadFromRenderedText(text, { 0,0,0 }))
 		printf("Unable to render time texture\n");
 	Render(0, 30);
@@ -39,5 +41,14 @@ void FPSGauge::AverageFPSTimerStart()
 
 void FPSGauge::currentFPSTimerStart()
 {
-	currentFPStimer.Start();
+	if (Program::framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
+		currentFPStimer.Start();
 }
+
+void FPSGauge::SetFrameTime()
+{
+	if (Program::framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
+		frameTime = currentFPStimer.GetTime();
+}
+
+

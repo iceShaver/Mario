@@ -51,6 +51,7 @@ void Timer::Resume()
 	}
 }
 
+
 Uint32 Timer::GetTime() const
 {
 	Uint32 time = 0;

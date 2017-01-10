@@ -23,6 +23,7 @@ int main(int argc, char* argv[])
 		Program::fpsGauge.DisplayCurrentFPS();
 		SDL_RenderPresent(Program::renderer);
 		Program::framesCounter++;
+		Program::fpsGauge.SetFrameTime();
 	}
 
 
