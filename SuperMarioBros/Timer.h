@@ -1,6 +1,8 @@
 #pragma once
 #include <SDL.h>
-class Timer
+#include "Texture.h"
+
+class Timer : public Texture
 {
 public:
 	Timer();
@@ -9,7 +11,9 @@ public:
 	void Stop();
 	void Pause();
 	void Resume();
+	void DisplayTime();
 	Uint32 GetTime() const;
+	Uint32 GetSeconds() const;
 	bool IsStarted() const;
 	bool IsPaused() const;
 

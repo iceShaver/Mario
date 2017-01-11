@@ -7,7 +7,6 @@ SDL_Renderer * Program::renderer;
 SDL_Event Program::event;
 bool Program::quit = false;
 TTF_Font * Program::font;
-int Program::framesCounter = 0;
 
 bool Program::Init()
 {
@@ -45,7 +44,7 @@ bool Program::Init()
 
 bool Program::LoadContent()
 {
-	if(!(font = TTF_OpenFont("OpenSans.ttf", 28)))
+	if(!(font = TTF_OpenFont("OpenSans.ttf", 12)))
 	{
 		printf("Unable to load font: %s\n", TTF_GetError());
 		return false;
@@ -94,6 +93,6 @@ void Program::HandleAction()
 
 void Program::ClearRenderer()
 {
-	SDL_SetRenderDrawColor(renderer, 0xff, 0xff, 0xff, 0xff);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
 	SDL_RenderClear(renderer);
 }

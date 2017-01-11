@@ -31,8 +31,9 @@ namespace Config
 	const int WINDOW_POSITION = SDL_WINDOWPOS_UNDEFINED;
 	const Uint32 WINDOW_FLAGS = SDL_WINDOW_SHOWN;
 	const int RENDERER_DRIVER_INDEX = -1;
-	const Uint32 RENDERER_FLAGS = SDL_RENDERER_ACCELERATED;
-	const int CURRENT_FPS_UPDATE_INTERVAL = 500;
+	const Uint32 RENDERER_FLAGS = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
+	//Interval between the following FPS measurements
+	const int CURRENT_FPS_UPDATE_INTERVAL = 30;
 
 
 
@@ -41,6 +42,7 @@ class Program
 {
 public:
 	static FPSGauge fpsGauge;
+	static Timer timer;
 	static bool Init();
 	static bool LoadContent();
 	static void Exit();
@@ -51,10 +53,10 @@ public:
 	static bool quit;
 	static SDL_Renderer * renderer;
 	static TTF_Font * font;
-	static int framesCounter;
 
 private:
 	static SDL_Window * window;
 	static SDL_Event event;
+	static int deltaTime;
 };
 

@@ -1,10 +1,15 @@
 #include "FPSGauge.h"
 #include "Program.h"
 
-
+Timer Program::timer;
 FPSGauge::FPSGauge()
 {
-	frameTime = 1;
+	framesCounter = 0;
+	startFrameTime = 0;
+	endFrameTime = 0;
+	deltaFrameTime = 1;
+	currentFPS = 0;
+
 
 }
 
@@ -16,22 +21,21 @@ FPSGauge::~FPSGauge()
 void FPSGauge::DisplayAverageFPS()
 {
 	char text[32];
-	float fps = Program::framesCounter / (averageFPSTimer.GetTime() / 1000.f);
-	sprintf(text, "AVG FPS: %f", fps);
-	if (!LoadFromRenderedText(text, { 0,0,0 }))
+	float fps = framesCounter / (averageFPSTimer.GetTime() / 1000.f);
+	sprintf(text, "AVG FPS: %.2f", fps);
+	if (!LoadFromRenderedText(text, { 0xff,0xff,0xff }))
 		printf("Unable to render time texture\n");
-	Render(0, 0);
+	Render(200, 0);
 }
 
 void FPSGauge::DisplayCurrentFPS()
 {
 	char text[32];
-	if (Program::framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
-		currentFPS = 1000 * Config::CURRENT_FPS_UPDATE_INTERVAL / (float)frameTime;
-	sprintf(text, "CUR FPS: %f", currentFPS);
-	if (!LoadFromRenderedText(text, { 0,0,0 }))
+	currentFPS = 1000*Config::CURRENT_FPS_UPDATE_INTERVAL/deltaFrameTime;
+	sprintf(text, "CUR FPS: %d", currentFPS);
+	if (!LoadFromRenderedText(text, { 0xff,0xff,0xff }))
 		printf("Unable to render time texture\n");
-	Render(0, 30);
+	Render(320, 0);
 }
 
 void FPSGauge::AverageFPSTimerStart()
@@ -39,16 +43,55 @@ void FPSGauge::AverageFPSTimerStart()
 	averageFPSTimer.Start();
 }
 
-void FPSGauge::currentFPSTimerStart()
+
+
+void FPSGauge::SetStartupFrameTime()
 {
-	if (Program::framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
-		currentFPStimer.Start();
+	if (framesCounter%Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
+		startFrameTime = Program::timer.GetTime();
 }
 
-void FPSGauge::SetFrameTime()
+
+
+void FPSGauge::FramesCounterIncrease()
 {
-	if (Program::framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
-		frameTime = currentFPStimer.GetTime();
+	framesCounter++;
+}
+
+void FPSGauge::DisplayFramesCount()
+{
+	char text[32];
+	sprintf(text, "FPS count: %d", framesCounter);
+	if (!LoadFromRenderedText(text, { 0xff,0xff,0xff }))
+		printf("Unable to render time texture\n");
+	Render(80, 0);
+
+}
+
+void FPSGauge::DisplayFrameTime()
+{
+	char text[32];
+	sprintf(text, "%d rames time: %d", Config::CURRENT_FPS_UPDATE_INTERVAL, deltaFrameTime);
+	if (!LoadFromRenderedText(text, { 0xff,0xff,0xff }))
+		printf("Unable to render time texture\n");
+	Render(420, 0);
+}
+
+void FPSGauge::SetDeltaTime()
+{
+	if (framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
+	{
+		endFrameTime = Program::timer.GetTime();
+		deltaFrameTime = endFrameTime - startFrameTime;
+	}
+}
+
+void FPSGauge::DisplayStats()
+{
+	DisplayAverageFPS();
+	DisplayCurrentFPS();
+	DisplayFramesCount();
+	//DisplayFrameTime();
 }
 
 

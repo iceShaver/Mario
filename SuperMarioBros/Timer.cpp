@@ -1,5 +1,6 @@
 #include "Timer.h"
-
+#include <stdio.h>
+#include "Program.h"
 
 
 Timer::Timer()
@@ -51,14 +52,31 @@ void Timer::Resume()
 	}
 }
 
+void Timer::DisplayTime()
+{
+	char text[32];
+		float time = GetTime()/1000.f;
+	sprintf(text, "TIME: %.1f", time);
+	if (!LoadFromRenderedText(text, { 0xff,0xff,0xff }))
+		printf("Unable to render time texture\n");
+	Render(0, 0);
+}
+
 
 Uint32 Timer::GetTime() const
 {
-	Uint32 time = 0;
 	if (started)
 		if (paused)
 			return pausedTime;
 	return SDL_GetTicks() - startTime;
+}
+
+Uint32 Timer::GetSeconds() const
+{
+	if (started)
+		if (paused)
+			return pausedTime/1000;
+	return (SDL_GetTicks() - startTime)/1000;
 }
 
 bool Timer::IsStarted() const

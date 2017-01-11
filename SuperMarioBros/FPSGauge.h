@@ -10,14 +10,19 @@ public:
 	~FPSGauge();
 	void DisplayAverageFPS();
 	void DisplayCurrentFPS();
+	void DisplayFramesCount();
+	void DisplayFrameTime();
 	void AverageFPSTimerStart();
-	void currentFPSTimerStart();
-	void SetFrameTime();
-	Uint32 GetFrameTime();
+	void SetStartupFrameTime();
+	void FramesCounterIncrease();
+	void SetDeltaTime();
+	void DisplayStats();
 private:
+	Uint32 framesCounter;
+	Uint32 startFrameTime;
+	Uint32 endFrameTime;
+	Uint32 deltaFrameTime;
 	Timer averageFPSTimer;
-	Timer currentFPStimer;
-	float currentFPS;
-	Uint32 frameTime;
+	Uint32 currentFPS;
 };
 
