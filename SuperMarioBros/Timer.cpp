@@ -51,12 +51,12 @@ void Timer::Resume()
 	}
 }
 
-void Timer::DisplayTime()
+void Timer::DisplayTime(SDL_Color color)
 {
 	char text[32];
 		float time = GetTime()/1000.f;
 	sprintf(text, "TIME: %.1f", time);
-	if (!LoadFromRenderedText(text, { 0xff,0xff,0xff }))
+	if (!LoadFromRenderedText(text, color))
 		printf("Unable to render time texture\n");
 	Render(0, 0);
 }

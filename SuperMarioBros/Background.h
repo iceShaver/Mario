@@ -5,8 +5,9 @@
 class Background : public Object
 {
 public:
+	bool Render() override;
+	bool LoadContent() override;
 	Background();
 	~Background();
-	long long x;
 };
 

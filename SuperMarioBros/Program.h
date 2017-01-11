@@ -5,6 +5,9 @@
 #include "Object.h"
 #include <SDL.h>
 #include "FPSGauge.h"
+#include "Player.h"
+#include "Background.h"
+
 class Program
 {
 public:
@@ -12,6 +15,7 @@ public:
 	static Timer timer;
 	static bool Init();
 	static bool LoadContent();
+	static void Render();
 	static void Exit();
 	static void EmergencyExit();
 	static void HandleEvent();
@@ -20,11 +24,13 @@ public:
 	static bool quit;
 	static SDL_Renderer * renderer;
 	static TTF_Font * font;
+	static Player * player;
+	static Background * background;
+	static int deltaTime;
 
 private:
 	static SDL_Window * window;
 	static SDL_Event event;
-	static int deltaTime;
 	static List<Object> objects;
 };
 

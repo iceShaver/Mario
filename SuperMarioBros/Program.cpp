@@ -4,15 +4,18 @@
 #include "Config.h"
 #include <stdio.h>
 #include "Object.h"
-#include "Dot.h"
+#include "Player.h"
 #include <conio.h>
 #include "List.h"
+#include "Background.h"
 SDL_Window * Program::window;
 SDL_Renderer * Program::renderer;
 SDL_Event Program::event;
 bool Program::quit = false;
 TTF_Font * Program::font;
 List<Object> Program::objects;
+Player * Program::player;
+Background * Program::background;
 bool Program::Init()
 {
 	int error = false;
@@ -42,14 +45,10 @@ bool Program::Init()
 		error = true;
 	}
 
-	Object * background = new Object;
-	Dot * player = new Dot;
-	Object * ground = new Object;
-
-	objects.Add(background);
-	objects.Add(player);
-	objects.Add(ground);
-	objects.ForEach(&Object::Init);
+	background = new Background;
+	player = new Player;
+	//Object * ground = new Object;
+	//SDL_RenderSetScale(renderer, 0.5, 0.5);
 	if (error) return false;
 	return true;
 
@@ -63,13 +62,28 @@ bool Program::LoadContent()
 		printf("Unable to load font: %s\n", TTF_GetError());
 		return false;
 	}
-	objects.ForEach(&Object::LoadContent);
+
+	background->LoadContent();
+	player->LoadContent();
+
+	//objects.ForEach(&Object::LoadContent);
 	return true;
+}
+
+void Program::Render()
+{
+	background->Render();
+	player->Render();
+
+	//objects.ForEach(&Object::Render);
 }
 
 
 void Program::Exit()
 {
+	delete background;
+	delete player;
+	TTF_CloseFont(font);
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
@@ -99,11 +113,13 @@ void Program::HandleEvent()
 				break;
 			default:break;
 			}
+		player->HandleEvent(event);
 	}
 }
 
 void Program::HandleAction()
 {
+	player->Move();
 }
 
 void Program::ClearRenderer()

@@ -44,7 +44,7 @@ public:
 	Type * Get(int index);
 	Type * GetLast() const;
 	Type * GetFirst() const;
-	bool ForEach(bool (Object::*function)());
+	bool ForEach(bool (Type::*function)());
 	bool Delete(int index);
 private:
 	ListElement<Type> * getElement(int index);
@@ -142,9 +142,10 @@ template<class Type> Type * List<Type>::GetFirst() const
 }
 
 template <class Type>
-bool List<Type>::ForEach(bool (Object::*function)())
+bool List<Type>::ForEach(bool (Type::*function)())
 {
 	ListElement<Type> * element = firstPtr;
+	if(element)
 	do
 	{
 		if(!(element->object->*function)()) return false;

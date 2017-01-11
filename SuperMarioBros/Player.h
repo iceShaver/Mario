@@ -1,11 +1,12 @@
 #pragma once
 #include "Object.h"
 //class Object::HandleEvent;
-class Dot : public Object
+class Player : public Object
 {
 public:
-	Dot();
-	~Dot();
+	Player();
+	~Player();
+	bool Render() override;
 	bool LoadContent() override;
 };
 

@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
 		Program::HandleEvent();
 		Program::HandleAction();
 		Program::ClearRenderer();
-
+		Program::Render();
 		Program::fpsGauge.DisplayStats();
 		
 		Program::timer.DisplayTime();
