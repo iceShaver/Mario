@@ -6,6 +6,8 @@
 #include <string.h>
 #include "List.h"
 #include "Object.h"
+#include "Background.h"
+#include <list>
 FPSGauge Program::fpsGauge;
 
 int main(int argc, char* argv[])
