@@ -1,8 +1,7 @@
 #include "Timer.h"
+#include <SDL.h>
 #include <stdio.h>
-#include "Program.h"
-
-
+#include "Object.h"
 Timer::Timer()
 {
 	startTime = 0;

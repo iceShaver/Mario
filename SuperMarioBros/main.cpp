@@ -1,17 +1,12 @@
-#include <SDL.h>
+#include "FPSGauge.h"
 #include "Program.h"
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-#include <conio.h>
-#include <string.h>
-#include "List.h"
-#include "Object.h"
-#include "Background.h"
-#include <list>
+#include <SDL.h>
+
 FPSGauge Program::fpsGauge;
 
 int main(int argc, char* argv[])
 {
+	
 	if (!Program::Init()) Program::EmergencyExit();
 	if (!Program::LoadContent()) Program::EmergencyExit();
 	Program::fpsGauge.AverageFPSTimerStart();

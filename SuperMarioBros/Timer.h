@@ -1,6 +1,7 @@
 #pragma once
-#include <SDL.h>
 #include "Texture.h"
+#include <SDL.h>
+
 
 class Timer : public Texture
 {

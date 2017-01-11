@@ -1,13 +1,18 @@
 #include "Program.h"
 #include <SDL.h>
+#include <SDL_ttf.h>
+#include "Config.h"
+#include <stdio.h>
+#include "Object.h"
+#include "Dot.h"
 #include <conio.h>
-
+#include "List.h"
 SDL_Window * Program::window;
 SDL_Renderer * Program::renderer;
 SDL_Event Program::event;
 bool Program::quit = false;
 TTF_Font * Program::font;
-
+List<Object> Program::objects;
 bool Program::Init()
 {
 	int error = false;
@@ -36,6 +41,15 @@ bool Program::Init()
 		printf("Renderer initialization error: %s\n", SDL_GetError());
 		error = true;
 	}
+
+	Object * background = new Object;
+	Dot * player = new Dot;
+	Object * ground = new Object;
+
+	objects.Add(background);
+	objects.Add(player);
+	objects.Add(ground);
+	objects.ForEach(&Object::Init);
 	if (error) return false;
 	return true;
 
@@ -44,11 +58,12 @@ bool Program::Init()
 
 bool Program::LoadContent()
 {
-	if(!(font = TTF_OpenFont("OpenSans.ttf", 12)))
+	if(!(font = TTF_OpenFont(Config::FONT, 12)))
 	{
 		printf("Unable to load font: %s\n", TTF_GetError());
 		return false;
 	}
+	objects.ForEach(&Object::LoadContent);
 	return true;
 }
 

@@ -1,7 +1,7 @@
 #pragma once
-#include "Timer.h"
 #include "Texture.h"
-
+#include <SDL.h>
+#include "Timer.h"
 class FPSGauge :
 	public Texture
 {

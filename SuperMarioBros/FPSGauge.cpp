@@ -1,5 +1,7 @@
 #include "FPSGauge.h"
 #include "Program.h"
+#include <stdio.h>
+#include "Object.h"
 
 Timer Program::timer;
 FPSGauge::FPSGauge()

@@ -1,9 +1,5 @@
 #pragma once
-#ifndef list_h
-#define list_h
 #include "Object.h"
-#include "stdio.h"
-//#include "ListElement.h"
 
 //--------------------------ListElement Class----------------------------
 template <class Type> class ListElement
@@ -24,6 +20,10 @@ private:
 template <class Type>
 ListElement<Type>::ListElement()
 {
+	index = 0;
+	nextPtr = nullptr;
+	prevPtr = nullptr;
+	object = nullptr;
 }
 
 template <class Type>
@@ -32,7 +32,7 @@ ListElement<Type>::~ListElement()
 	delete object;
 }
 
-
+//class Object;
 
 //--------------------------List class--------------------------------
 template <class Type> class List
@@ -44,6 +44,7 @@ public:
 	Type * Get(int index);
 	Type * GetLast() const;
 	Type * GetFirst() const;
+	bool ForEach(bool (Object::*function)());
 	bool Delete(int index);
 private:
 	ListElement<Type> * getElement(int index);
@@ -140,6 +141,18 @@ template<class Type> Type * List<Type>::GetFirst() const
 	return firstPtr->object;
 }
 
+template <class Type>
+bool List<Type>::ForEach(bool (Object::*function)())
+{
+	ListElement<Type> * element = firstPtr;
+	do
+	{
+		if(!(element->object->*function)()) return false;
+	}
+	while (element=element->nextPtr);
+	return true;
+}
+
 template <class Type> bool List<Type>::Delete(int index)
 {
 	ListElement<Type> * element = getElement(index);
@@ -188,6 +201,6 @@ ListElement<Type>* List<Type>::getElement(int index)
 
 
 
-#endif
+
 
 

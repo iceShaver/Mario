@@ -1,9 +1,9 @@
 #include "Texture.h"
+#include <SDL.h>
 #include <SDL_image.h>
-#include <cstdio>
+#include <SDL_ttf.h>
+#include <stdio.h>
 #include "Program.h"
-
-
 Texture::Texture()
 {
 	texture = nullptr;
