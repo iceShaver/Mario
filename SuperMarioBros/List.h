@@ -29,7 +29,8 @@ ListElement<Type>::ListElement()
 template <class Type>
 ListElement<Type>::~ListElement()
 {
-	delete object;
+	if (object)
+		delete object;
 }
 
 //class Object;
@@ -128,6 +129,7 @@ template<class Type> Type * List<Type>::Get(int index)
 
 template<class Type> Type * List<Type>::GetLast() const
 {
+	if (!lastPtr) return nullptr;
 	return lastPtr->object;
 }
 
@@ -141,17 +143,19 @@ template<class Type> Type * List<Type>::GetFirst() const
 	return firstPtr->object;
 }
 
+
+
+
 template <class Type>
 bool List<Type>::ForEach(bool (Type::*function)())
 {
 	ListElement<Type> * element = firstPtr;
-	if(element)
-	do
-	{
-		if(!(element->object->*function)()) return false;
-	}
-	while (element=element->nextPtr);
-	return true;
+	if (element)
+		do
+		{
+			if ((element->object->*function)()) return true;
+		} while (element = element->nextPtr);
+		return false;
 }
 
 template <class Type> bool List<Type>::Delete(int index)

@@ -43,7 +43,7 @@ bool Texture::LoadFromFile(const char* path)
 bool Texture::LoadFromRenderedText(const char* text, SDL_Color textColor)
 {
 	Free();
-	SDL_Surface * tmpSurface = TTF_RenderText_Blended(Program::font, text, textColor);
+	SDL_Surface * tmpSurface = TTF_RenderText_Shaded(Program::font, text, textColor, {0xff, 0xff, 0xff});
 	if(!tmpSurface)
 	{
 		SDL_FreeSurface(tmpSurface);

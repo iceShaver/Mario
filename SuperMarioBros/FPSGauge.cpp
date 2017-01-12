@@ -4,15 +4,12 @@
 #include "Object.h"
 
 Timer Program::timer;
-int Program::deltaTime;
+float Program::deltaTime;
 FPSGauge::FPSGauge()
 {
 	framesCounter = 0;
-	startFrameTime = 0;
-	endFrameTime = 0;
-	deltaFrameTime = 1;
+	currentFPSFramesTime = 1;
 	currentFPS = 0;
-
 
 }
 
@@ -34,7 +31,7 @@ void FPSGauge::DisplayAverageFPS(SDL_Color color)
 void FPSGauge::DisplayCurrentFPS(SDL_Color color)
 {
 	char text[32];
-	currentFPS = 1000*Config::CURRENT_FPS_UPDATE_INTERVAL/deltaFrameTime;
+	currentFPS = 1000*Config::CURRENT_FPS_UPDATE_INTERVAL/currentFPSFramesTime;
 	sprintf(text, "CUR FPS: %d", currentFPS);
 	if (!LoadFromRenderedText(text, color))
 		printf("Unable to render time texture\n");
@@ -48,13 +45,17 @@ void FPSGauge::AverageFPSTimerStart()
 
 
 
-void FPSGauge::SetStartupFrameTime()
+
+
+void FPSGauge::SetDeltaTime()
 {
-	if (framesCounter%Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
-		startFrameTime = Program::timer.GetTime();
+	if (framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
+	{
+		
+		currentFPSFramesTime = currentFPSTimer.GetTime();
+		currentFPSTimer.Start();
+	}
 }
-
-
 
 void FPSGauge::FramesCounterIncrease()
 {
@@ -74,21 +75,13 @@ void FPSGauge::DisplayFramesCount(SDL_Color color)
 void FPSGauge::DisplayFrameTime(SDL_Color color)
 {
 	char text[32];
-	sprintf(text, "%d rames time: %d", Config::CURRENT_FPS_UPDATE_INTERVAL, deltaFrameTime);
+	sprintf(text, "%d frames time: %d", Config::CURRENT_FPS_UPDATE_INTERVAL, currentFPSFramesTime);
 	if (!LoadFromRenderedText(text, color))
 		printf("Unable to render time texture\n");
 	Render(420, 0);
 }
 
-void FPSGauge::SetDeltaTime()
-{
-	if (framesCounter % Config::CURRENT_FPS_UPDATE_INTERVAL == 0)
-	{
-		endFrameTime = Program::timer.GetTime();
-		deltaFrameTime = endFrameTime - startFrameTime;
-		Program::deltaTime = deltaFrameTime;
-	}
-}
+
 
 void FPSGauge::DisplayStats()
 {
@@ -96,7 +89,17 @@ void FPSGauge::DisplayStats()
 	DisplayAverageFPS();
 	DisplayCurrentFPS();
 	DisplayFramesCount();
-	//DisplayFrameTime();
+	DisplayFrameTime();
+}
+
+void FPSGauge::VSync()
+{
+	if (Config::FPS_LOCK) {
+		double frameTime = vSyncTimer.GetTime();
+		if (frameTime < Config::VSYNC_REQUIRED_FRAME_TIME)
+			SDL_Delay(Config::VSYNC_REQUIRED_FRAME_TIME - frameTime);
+		vSyncTimer.Start();
+	}
 }
 
 

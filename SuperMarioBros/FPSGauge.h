@@ -13,16 +13,18 @@ public:
 	void DisplayFramesCount(SDL_Color color = { 0,0,0 });
 	void DisplayFrameTime(SDL_Color color = { 0,0,0 });
 	void AverageFPSTimerStart();
-	void SetStartupFrameTime();
 	void FramesCounterIncrease();
 	void SetDeltaTime();
 	void DisplayStats();
+	void VSync();
+
+
 private:
+	Uint32 currentFPSFramesTime;
 	Uint32 framesCounter;
-	Uint32 startFrameTime;
-	Uint32 endFrameTime;
-	Uint32 deltaFrameTime;
 	Timer averageFPSTimer;
+	Timer currentFPSTimer;
+	Timer vSyncTimer;
 	Uint32 currentFPS;
 };
 
