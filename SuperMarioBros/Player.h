@@ -6,7 +6,7 @@
 class Player : public Object
 {
 public:
-	Player(int xPos, int yPos, const char * textureFileName, Movability movable = NonMovable, ObjectType objectType = Solid, Transparency transparency = Transparent, Color transparencyColor = { 0,0,0 });
+	Player(int xPos, int yPos, const char * textureFileName, Movability movable = NonMovable, ObjectType objectType = Solid, Repeatability repeatability = NonRepeatable, Transparency transparency = Transparent, Color transparencyColor = { 0,0,0 });
 	Player(int xPos, int yPos, Color textColor = { 0,0,0 }, Movability movable = NonMovable, ObjectType objectType = Solid);
 	~Player();
 	void HandleEvent(SDL_Event & event) override;
@@ -15,5 +15,6 @@ public:
 private:
 	Timer jumpTimer;
 	bool jump;
+	bool jumping;
 };
 

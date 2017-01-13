@@ -5,8 +5,9 @@
 #include <stdio.h>
 #include "Program.h"
 #include <string.h>
-
-Object::Object(int xPos, int yPos, const char* textureFileName, Movability movable, ObjectType objectType, Transparency transparency, Color transparencyColor)
+#include "Camera.h"
+Camera Program::camera;
+Object::Object(int xPos, int yPos, const char* textureFileName, Movability movable, ObjectType objectType, Repeatability repeatability, Transparency transparency, Color transparencyColor)
 {
 	xV = 0;
 	yV = 0;
@@ -23,6 +24,11 @@ Object::Object(int xPos, int yPos, const char* textureFileName, Movability movab
 	this->transparency = transparency;
 	this->transparencyColor = transparencyColor;
 	flip = SDL_FLIP_NONE;
+	clip = nullptr;
+	angle = 0.0;
+	center = nullptr;
+	repeatable = repeatability;
+
 }
 
 Object::Object(int xPos, int yPos, Color textColor, Movability movable, ObjectType objectType)
@@ -43,6 +49,10 @@ Object::Object(int xPos, int yPos, Color textColor, Movability movable, ObjectTy
 	transparencyColor = { 0,0,0 };
 	this->textColor = textColor;
 	flip = SDL_FLIP_NONE;
+	clip = nullptr;
+	angle = 0.0;
+	center = nullptr;
+	repeatable = NonRepeatable;
 
 }
 
@@ -74,7 +84,7 @@ bool Object::GetTextureFromFile()
 	SDL_FreeSurface(tmpSurface);
 	texture = newTexture;
 	printf("Texture %s loaded\n", texturePath);
-	return true;
+	return false;
 }
 
 void Object::dump()
@@ -158,17 +168,28 @@ int Object::GetHeight()
 	return  height;
 }
 
-bool Object::Render(int camX, int camY,SDL_Rect* clip, double angle, SDL_Point* center) const
+bool Object::Render()
 {
-	SDL_Rect renderedRect = { xPos-Program::camera.x, yPos-Program::camera.y, width, height };
+	SDL_Rect renderedRect = { xPos - Program::camera.GetXPos(), yPos - Program::camera.GetYPos(), width, height };
 
 	if (clip)
 	{
 		renderedRect.w = clip->w;
 		renderedRect.h = clip->h;
 	}
-	SDL_RenderCopyEx(Program::renderer, texture, clip, &renderedRect, angle, center, this->flip);
-	return true;
+	if (repeatable)
+	{
+		SDL_RenderCopyEx(Program::renderer, texture, clip, &renderedRect, angle, center, flip);
+
+		while(renderedRect.x+renderedRect.w<Program::camera.GetXPos() + Program::camera.GetWidth())
+		{
+			renderedRect.x += renderedRect.w;
+			collider.w += width;
+			SDL_RenderCopyEx(Program::renderer, texture, clip, &renderedRect, angle, center, flip);
+		}
+	}else
+		SDL_RenderCopyEx(Program::renderer, texture, clip, &renderedRect, angle, center, flip);
+	return false;
 }
 
 bool Object::CheckCollision()

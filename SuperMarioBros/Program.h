@@ -6,6 +6,7 @@
 #include <SDL.h>
 #include "FPSGauge.h"
 #include "Player.h"
+#include "Camera.h"
 
 
 class Program
@@ -22,8 +23,8 @@ public:
 	static void HandleAction();
 	static void ClearRenderer();
 	static void SetDeltaTime();
-	static void SetCamera();
 	static float GetDeltaTime();
+	static void DisplayPlayerXY();
 	static bool quit;
 	static SDL_Renderer * renderer;
 	static TTF_Font * font;
@@ -32,11 +33,12 @@ public:
 	static Object * ground;
 	static List<Object> objects;
 	static Timer timer;
-	static SDL_Rect camera;
+	static Camera camera;
+
+	//static SDL_Rect camera;
 private:
 	//Time of one frame in seconds
 	static float deltaTime;
-
 	static Timer deltaTimer;
 	static SDL_Window * window;
 	static SDL_Event event;

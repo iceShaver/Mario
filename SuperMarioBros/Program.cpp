@@ -17,7 +17,7 @@ Player * Program::player;
 Object * Program::background;
 Object * Program::ground;
 Timer Program::deltaTimer;
-SDL_Rect Program::camera;
+//SDL_Rect Program::camera;
 bool Program::Init()
 {
 	timer.Start();
@@ -48,12 +48,15 @@ bool Program::Init()
 		printf("Renderer initialization error: %s\n", SDL_GetError());
 		error = true;
 	}
-	camera = { 0,0,Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT };
+	SDL_RenderSetLogicalSize(renderer, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT);
 	deltaTime = 0;
-	background = new Object(0, 0, "textures/background.png");
-	player = new Player(Config::SCREEN_WIDTH/2,Config::SCREEN_HEIGHT/2, "textures/mario.png",Object::Movable , Object::Solid, Object::Transparent, {0xff, 0xff, 0xff});
-	ground = new Object(0, 556, "textures/ground.png", Object::NonMovable, Object::Solid);
+	background = new Object(0, 0, "textures/background.png", Object::NonMovable, Object::Virtual, Object::Repeatable);
+	player = new Player(Config::SCREEN_WIDTH/2,Config::SCREEN_HEIGHT/2, "textures/mario.png",Object::Movable , Object::Virtual, Object::NonRepeatable, Object::Transparent, {0xff, 0xff, 0xff});
+	ground = new Object(0, 556, "textures/ground.png", Object::NonMovable, Object::Solid, Object::Repeatable);
+	objects.Add(background);
 	objects.Add(ground);
+	objects.Add(player);
+	camera.Follow(player);
 	//SDL_RenderSetScale(renderer, 0.5, 0.5);
 	if (error) return false;
 	return true;
@@ -68,29 +71,28 @@ bool Program::LoadContent()
 		printf("Unable to load font: %s\n", TTF_GetError());
 		return false;
 	}
-	background->GetTextureFromFile();
+	/*background->GetTextureFromFile();
 	player->GetTextureFromFile();
-	ground->GetTextureFromFile();
-
+	ground->GetTextureFromFile();*/
+	objects.ForEach(&Object::GetTextureFromFile);
 	return true;
 }
 
 void Program::Render()
 {
-	background->Render();
-	ground->Render();
-	player->Render();
+
 
 
 	//player->Render();
-	//objects.ForEach(&Object::Render);
+	objects.ForEach(&Object::Render);
+	//player->Render();
 }
 
 
 void Program::Exit()
 {
-	delete background;
-	delete player;
+	//delete background;
+	//delete player;
 	//delete ground;
 	TTF_CloseFont(font);
 	SDL_DestroyWindow(window);
@@ -145,19 +147,19 @@ void Program::SetDeltaTime()
 	deltaTimer.Start();
 }
 
-void Program::SetCamera()
-{
-	camera.x = (player->GetXPos() + player->GetWidth() / 2) - Config::SCREEN_WIDTH / 2;
-	camera.y = (player->GetYPos() + player->GetHeight() / 2) - Config::SCREEN_HEIGHT / 2;
 
-	if (camera.x < 0) camera.x = 0;
-	if (camera.y < 0) camera.y = 0;
-	if (camera.x + camera.w > Config::LEVEL_WIDTH) camera.x = Config::LEVEL_WIDTH - camera.w;
-	if (camera.y + camera.h > Config::LEVEL_HEIGHT) camera.y = Config::LEVEL_HEIGHT - camera.h;
-
-}
 
 float Program::GetDeltaTime()
 {
 	return deltaTime;
+}
+
+void Program::DisplayPlayerXY()
+{
+	Texture xy;
+	char text[20];
+	sprintf_s(text, 20, "(%d, %d)", player->GetXPos(), player->GetYPos());
+	xy.LoadFromRenderedText(text, { 0,0,0 });
+	xy.Render(Config::SCREEN_WIDTH - xy.GetWidth(), 0);
+	//xy.LoadFromRenderedText()
 }
