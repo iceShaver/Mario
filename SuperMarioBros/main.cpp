@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 		if (Program::IsGameStarted())
 		{
 			Program::Render();
-			Program::DisplayStats();
+			Program::DisplayInfo();
 		}else
 		Program::DisplayMenu();
 		Program::DisplayDiagnosticInfo();

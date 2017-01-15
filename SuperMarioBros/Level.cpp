@@ -1,7 +1,7 @@
 #include "Level.h"
 #include <string.h>
 #include <stdio.h>
-
+#include "Program.h"
 Level::Level(const char* name, int groundLevel, int width, int height, int time, int endXPos, int startPlayerXPos, int startPlayerYPos)
 {
 	printf("New level\n");
@@ -30,6 +30,12 @@ Level::~Level()
 int Level::GetGroundLevel() const
 {
 	return groundLevel;
+}
+
+List<Level> Level::LoadLevels()
+{
+	List<Level> list;
+	return list;
 }
 
 int Level::GetWidth() const
@@ -87,10 +93,17 @@ bool Level::readFromFile(const char* path)
 		strcpy_s(name, Config::LEVEL_NAME_LENGTH, "");
 	fscanf(file, "%d%d%d%d%d%d%d", &width, &height, &time, &startPlayerXPos, &startPlayerYPos, &endXPos, &groundLevel);
 	groundLevel = height - groundLevel;
-	/*while(feof(file))
+	while(!feof(file))
 	{
-		
-	}*/
+		int x, y;
+		char name[Config::OBJECT_NAME_LENGTH];
+		char texture[Config::TEXTURE_FILE_NAME_LENGTH];
+		fscanf(file, "%s%s%d%d", name, texture, &x, &y);
+		Object * object = new Object(x, y, Program::textures.Get(texture), name, Object::NonMovable, Object::Solid, Object::NonRepeatable);
+		//objects.Add(object);
+		Program::objects.Add(object);
+	}
+
 	fclose(file);
 	return true;
 

@@ -13,11 +13,14 @@ public:
 	void HandleEvent(SDL_Event & event) override;
 	void HandleJump();
 	void Reset();
+	void GrabLive();
+	int GetLivesCount();
 
 private:
 	Timer jumpTimer;
 	bool jump;
 	bool jumping;
 	int curY;
+	int livesCount;
 };
 

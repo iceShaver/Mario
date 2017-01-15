@@ -1,0 +1,3 @@
+Level Name
+lvlWidth, lvlHeight, lvlTime, playerXPos, playerYPos, finishXPos, groundLevel
+objectName, objectTextureName, objectXPos,objectYPos

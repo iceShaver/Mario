@@ -39,7 +39,6 @@ Object::Object(int xPos, int yPos, Texture * texture, const char * name, Movabil
 	yV = 0;
 	collider.w = width = texture->GetWidth();
 	collider.h = height = texture->GetHeight();
-	//texture = nullptr;
 	this->objectPosition = objectPosition;
 	this->xPos = xPos;
 	this->yPos = yPos;

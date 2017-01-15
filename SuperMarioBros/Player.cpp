@@ -15,6 +15,7 @@ Player::Player(int xPos, int yPos, Texture * texture, const char * name, Movabil
 	yV = Config::PLAYER_SPEED;
 	curY = yPos;
 	this->yPos = yPos - height;
+	livesCount = Config::INITIAL_LIVES_COUNT;
 
 }
 
@@ -25,7 +26,7 @@ Player::Player(int xPos, int yPos, ObjectPosition objectPosition, const char * n
 	jump = false;
 	jumping = false;
 	yV = Config::PLAYER_SPEED;
-
+	livesCount = Config::INITIAL_LIVES_COUNT;
 	curY = yPos;
 
 }
@@ -71,21 +72,19 @@ void Player::HandleJump()
 		static bool down;
 		if (!jumping)
 		{
-			curY = GetYPos(); 
+			curY = GetYPos();
 			yV = -Config::PLAYER_SPEED;
 			down = false;
 
 		}
-		Program::player->SetXY(GetXPos(), GetYPos() - 5.00);
-		Program::player->SetXY(GetXPos(), GetYPos() + 5.0);
-		if (((curY - GetYPos() > 300) || fabs(prevYPos-GetYPos() <= 1)) && jumping)
+		if (((curY - GetYPos() > 300) || fabs(prevYPos - GetYPos() <= 1)) && jumping)
 		{
 			yV = Config::PLAYER_SPEED;
 			down = true;
 		}
 		jumping = true;
 
-		if(((fabs(curY-GetYPos())<=1) && down) || ((fabs(yPos-prevYPos) <=1) && down))
+		if (/*((fabs(curY-GetYPos())<=1) && down) || */((fabs(yPos - prevYPos) <= 1) && down))
 		{
 			jump = jumping = false;
 			down = false;
@@ -99,12 +98,31 @@ void Player::Reset()
 	jump = false;
 	jumping = false;
 	yV = Config::PLAYER_SPEED;
-	curY = yPos;
 	xV = 0;
 	collider.x = xPos = Program::loadedLevel->GetStartPlayerXPos();
-	collider.y = yPos = Program::loadedLevel->GetGroundLevel()-height;
+	collider.y = yPos = Program::loadedLevel->GetGroundLevel() - height;
+	curY = yPos;
 	prevXPos = xPos;
 	prevYPos = yPos;
+	livesCount = Config::INITIAL_LIVES_COUNT;
+}
+
+void Player::GrabLive()
+{
+	jump = false;
+	jumping = false;
+	yV = Config::PLAYER_SPEED;
+	collider.x = xPos = Program::loadedLevel->GetStartPlayerXPos();
+	collider.y = yPos = Program::loadedLevel->GetGroundLevel() - height;
+	curY = yPos;
+	prevXPos = xPos;
+	prevYPos = yPos;
+	livesCount--;
+}
+
+int Player::GetLivesCount()
+{
+	return livesCount;
 }
 
 

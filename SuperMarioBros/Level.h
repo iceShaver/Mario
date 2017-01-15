@@ -9,6 +9,7 @@ public:
 	Level(const char * filePath);
 	~Level();
 	int GetGroundLevel() const;
+	static List<Level> LoadLevels();
 	int GetWidth() const;
 	int GetHeight() const;
 	void RenderObjects();

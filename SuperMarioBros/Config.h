@@ -48,6 +48,7 @@ namespace Config
 	const int JUMP_HIGHT = 200;
 	const int LEVEL_WIDTH = 80000;
 	const int LEVEL_HEIGHT = 600;
+	const int INITIAL_LIVES_COUNT = 3;
 
 
 

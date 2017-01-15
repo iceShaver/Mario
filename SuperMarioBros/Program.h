@@ -31,9 +31,8 @@ public:
 	static void SetDeltaTime();
 	static float GetDeltaTime();
 	static void DisplayText(const char * text, int x, int y, Texture::Color color = {0,0,0}, TTF_Font * font = standardFont);
-	static void DisplayRemainingTime();
 	static void DisplayDiagnosticInfo();
-	static void DisplayStats();
+	static void DisplayInfo();
 	static void DisplayMenu();
 	static void StartTheGame();
 	static bool IsGameStarted();
