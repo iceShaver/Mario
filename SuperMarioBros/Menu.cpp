@@ -24,7 +24,12 @@ void Menu::HandleEvent(SDL_Event & event)
 		switch (event.key.keysym.sym)
 		{
 		case SDLK_n: 
+			Program::EndGame();
+			Program::loadedLevel = Program::levels.GetFirst();
 			Program::StartTheGame(); break;
+		case SDLK_RETURN:
+			Program::LoadNextLevel(); 
+			break;
 		default:break;
 		}
 	}
@@ -35,10 +40,12 @@ void Menu::DisplayMenu()
 	switch (menuBehaviour)
 	{
 	case Win:
-		Program::DisplayText("Wygrałeś", (Config::SCREEN_WIDTH / 2) - 50, (Config::SCREEN_HEIGHT / 2) - 50, { 0x44, 0xff, 0x44 }, Program::gameFont);
+		Program::DisplayText("Wygrałeś", (Config::SCREEN_WIDTH / 2) - 50, (Config::SCREEN_HEIGHT / 4), { 0x44, 0xff, 0x44 }, Program::gameFont);
+		Program::DisplayText("ENTER - następny etap", (Config::SCREEN_WIDTH / 2) - 50, (Config::SCREEN_HEIGHT / 2)-40, { 0x44, 0xff, 0x44 }, Program::gameFont);
 		break;
 	case Lose:
-		Program::DisplayText("Przegrałeś", (Config::SCREEN_WIDTH / 2) - 50, (Config::SCREEN_HEIGHT / 2) - 50, { 0x44, 0xff, 0x44 }, Program::gameFont);
+		Program::DisplayText("Przegrałeś", (Config::SCREEN_WIDTH / 2) - 50, (Config::SCREEN_HEIGHT / 4), { 0x44, 0xff, 0x44 }, Program::gameFont);
+		Program::levels.ForEach(&Level::Uncomplete);
 		break;
 	case None:
 		break;
@@ -46,6 +53,8 @@ void Menu::DisplayMenu()
 		break;
 
 	}
+	Program::DisplayText("n - nowa gra", (Config::SCREEN_WIDTH / 2) - 100, (Config::SCREEN_HEIGHT / 2), Config::MENU_FONT_COLOR, Program::gameFont);
+	Program::DisplayText("ESC - wyjście", (Config::SCREEN_WIDTH / 2) - 100, (Config::SCREEN_HEIGHT / 2)+40, Config::MENU_FONT_COLOR, Program::gameFont);
 
 		
 

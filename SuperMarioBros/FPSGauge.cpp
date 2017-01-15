@@ -46,19 +46,19 @@ void FPSGauge::FramesCounterIncrease()
 }
 
 
-float FPSGauge::GetAverageFPS()
+float FPSGauge::GetAverageFPS() const
 {
 	return framesCounter / (averageFPSTimer.GetTime() / 1000.f);
 	
 }
 
-float FPSGauge::GetCurrentFPS()
+float FPSGauge::GetCurrentFPS() const
 {
 	return 1000 * Config::CURRENT_FPS_UPDATE_INTERVAL / currentFPSFramesTime;
 	
 }
 
-int FPSGauge::GetFramesCount()
+int FPSGauge::GetFramesCount() const
 {
 	return framesCounter;
 }

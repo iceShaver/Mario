@@ -67,14 +67,15 @@ bool Program::Init()
 	textures.Add(new Texture("textures/wall.png", "wall"));
 	background = new Object(0, 0, textures.Get("background"), "background", Object::NonMovable, Object::Virtual, Object::Repeatable);
 	objects.Add(background);
-	levels.Add(new Level("levels/level1.lvl"));
-	loadedLevel = levels.Get("Default Level");
+	//levels.Add(new Level("levels/level1.lvl"));
+	Level::LoadLevels();
+	loadedLevel = levels.GetFirst();
 	player = new Player(loadedLevel->GetStartPlayerXPos(), loadedLevel->GetGroundLevel(), textures.Get("player"), "player", Object::Movable, Object::Virtual, Object::NonRepeatable);
 	ground = new Object(0, 556, textures.Get("ground"), "ground", Object::NonMovable, Object::Solid, Object::Repeatable);
-	Object * wall = new Object(800, loadedLevel->GetHeight() - 300, textures.Get("wall"));
+	
 	objects.Add(ground);
 	objects.Add(player);
-	objects.Add(wall);
+	
 	camera.Follow(player);
 	gameStarted = false;
 	menu = new Menu();
@@ -113,7 +114,7 @@ void Program::Render()
 	//player->Render();
 
 	objects.ForEach(&Object::Render);
-	//loadedLevel->RenderObjects();
+	loadedLevel->RenderObjects();
 	//player->Render();
 }
 
@@ -194,6 +195,7 @@ void Program::HandleAction()
 	{
 		gameStarted = false;
 		menu->SetMenu(Menu::Win);
+		loadedLevel->LevelCompleted();
 		EndGame();
 	}
 
@@ -221,7 +223,7 @@ float Program::GetDeltaTime()
 
 
 
-void Program::DisplayText(const char* text, int x, int y, Texture::Color color, TTF_Font * font)
+void Program::DisplayText(const char* text, int x, int y, Config::Color color, TTF_Font * font)
 {
 	SDL_Surface * tmpSurface = TTF_RenderUTF8_Blended(font, text, { color.R, color.G, color.B });
 	SDL_Texture * texture;
@@ -255,13 +257,13 @@ void Program::DisplayDiagnosticInfo()
 void Program::DisplayInfo()
 {
 	char text[64];
-	sprintf_s(text, 64, "Pozostały czas: %d", remainingTime);
-	DisplayText(text, 0, 20, { 0xda, 0xa5, 0x20 }, gameFont);
+	DisplayText(loadedLevel->GetName(), 0, 20, Config::INFO_FONT_COLOR, gameFont);
+	sprintf_s(text, 64, "Pozostały czas: %.1f", remainingTime/1000.f);
+	DisplayText(text, 0, 50, Config::INFO_FONT_COLOR, gameFont);
 	sprintf_s(text, 64, "Ukończono: %.1f\%%", 100 * (player->GetXPos() / static_cast<float>(loadedLevel->GetEndXPos())));
-	DisplayText(text, 0, 40, { 0xda, 0xa5, 0x20 }, gameFont);
+	DisplayText(text, 0, 80, Config::INFO_FONT_COLOR, gameFont);
 	sprintf_s(text, 64, "Liczba żyć: %d", player->GetLivesCount());
-	DisplayText(text, 0, 60, { 0xda, 0xa5, 0x20 }, gameFont);
-
+	DisplayText(text, 0, 110, Config::INFO_FONT_COLOR, gameFont);
 }
 
 
@@ -289,4 +291,14 @@ void Program::EndGame()
 bool Program::IsGameStarted()
 {
 	return gameStarted;
+}
+
+void Program::LoadNextLevel()
+{
+	if (!levels.ForEach(&Level::GetNext))
+	{
+		EndGame();
+		return;
+	}
+	StartTheGame();
 }

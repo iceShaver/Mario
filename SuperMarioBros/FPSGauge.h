@@ -8,9 +8,9 @@ class FPSGauge :
 public:
 	FPSGauge();
 	~FPSGauge();
-	float GetAverageFPS();
-	float GetCurrentFPS();
-	int GetFramesCount();
+	float GetAverageFPS() const;
+	float GetCurrentFPS() const;
+	int GetFramesCount() const;
 	void AverageFPSTimerStart();
 	void FramesCounterIncrease();
 	void SetDeltaTime();

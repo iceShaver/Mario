@@ -13,6 +13,7 @@ public:
 	void HandleEvent(SDL_Event & event) override;
 	void HandleJump();
 	void Reset();
+	void ResetNotAll();
 	void GrabLive();
 	int GetLivesCount();
 

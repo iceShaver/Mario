@@ -107,6 +107,19 @@ void Player::Reset()
 	livesCount = Config::INITIAL_LIVES_COUNT;
 }
 
+void Player::ResetNotAll()
+{
+	jump = false;
+	jumping = false;
+	yV = Config::PLAYER_SPEED;
+	collider.x = xPos = Program::loadedLevel->GetStartPlayerXPos();
+	collider.y = yPos = Program::loadedLevel->GetGroundLevel() - height;
+	curY = yPos;
+	prevXPos = xPos;
+	prevYPos = yPos;
+	livesCount--;
+}
+
 void Player::GrabLive()
 {
 	jump = false;

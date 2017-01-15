@@ -5,11 +5,12 @@
 class Level
 {
 public:
+	friend class Object;
 	Level(const char * name, int groundLevel, int width, int height, int time, int endXPos, int startPlayerXPos, int startPlayerYPos);
 	Level(const char * filePath);
 	~Level();
 	int GetGroundLevel() const;
-	static List<Level> LoadLevels();
+	static void LoadLevels();
 	int GetWidth() const;
 	int GetHeight() const;
 	void RenderObjects();
@@ -17,7 +18,10 @@ public:
 	int GetStartPlayerYPos() const;
 	int GetEndXPos() const;
 	int GetTime() const;
+	bool GetNext();
+	void LevelCompleted();
 	const char * GetName() const;
+	bool Uncomplete();
 private:
 	bool readFromFile(const char * path);
 	int groundLevel;
@@ -28,7 +32,9 @@ private:
 	int startPlayerYPos;
 	int endXPos;
 	int time;
+	bool completed;
 	char name[Config::LEVEL_NAME_LENGTH];
+
 	//char filePath[Config::LEVEL_FILE_PATH_LENGTH];
 };
 

@@ -265,7 +265,8 @@ void Object::Move()
 		float yOffset = yV * Program::GetDeltaTime();
 		xPos += xOffset;
 		collider.x = xPos;
-		if (xPos<0 || xPos + width>Program::loadedLevel->GetWidth() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+		if (xPos<0 || xPos + width>Program::loadedLevel->GetWidth() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer)
+			|| Program::loadedLevel->objects.ForEach(&Object::CheckCollisionWithPlayer))
 		{
 			xPos -= xOffset;
 			collider.x = xPos;
@@ -274,7 +275,8 @@ void Object::Move()
 				if (xOffset > 0)xPos++;
 				else xPos--;
 				collider.x = xPos;
-				if (xPos<0 || xPos + width>Program::loadedLevel->GetWidth() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+				if (xPos<0 || xPos + width>Program::loadedLevel->GetWidth() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer)
+					|| Program::loadedLevel->objects.ForEach(&Object::CheckCollisionWithPlayer))
 				{
 					if (xOffset > 0)xPos--;
 					else xPos++;
@@ -287,7 +289,8 @@ void Object::Move()
 		yPos += yOffset;
 		collider.y = yPos;
 
-		if (yPos<0 || yPos + height>Program::loadedLevel->GetHeight() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+		if (yPos<0 || yPos + height>Program::loadedLevel->GetHeight() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer)
+			|| Program::loadedLevel->objects.ForEach(&Object::CheckCollisionWithPlayer))
 		{
 			yPos -= yOffset;
 			collider.y = yPos;
@@ -296,7 +299,8 @@ void Object::Move()
 				if (yOffset > 0)yPos++;
 				else yPos--;
 				collider.y = yPos;
-				if (yPos<0 || yPos + height>Program::loadedLevel->GetHeight() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+				if (yPos<0 || yPos + height>Program::loadedLevel->GetHeight() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer)
+					|| Program::loadedLevel->objects.ForEach(&Object::CheckCollisionWithPlayer))
 				{
 					if (yOffset > 0)yPos--;
 					else yPos++;

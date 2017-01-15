@@ -30,12 +30,13 @@ public:
 	static void ClearRenderer();
 	static void SetDeltaTime();
 	static float GetDeltaTime();
-	static void DisplayText(const char * text, int x, int y, Texture::Color color = {0,0,0}, TTF_Font * font = standardFont);
+	static void DisplayText(const char * text, int x, int y, Config::Color color = {0,0,0}, TTF_Font * font = standardFont);
 	static void DisplayDiagnosticInfo();
 	static void DisplayInfo();
 	static void DisplayMenu();
 	static void StartTheGame();
 	static bool IsGameStarted();
+	static void LoadNextLevel();
 	static bool quit;
 	static SDL_Renderer * renderer;
 	static TTF_Font * standardFont;

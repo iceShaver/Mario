@@ -5,6 +5,10 @@
 
 namespace Config
 {
+	struct Color
+	{
+		Uint8 R, G, B;
+	};
 	//-------------------MAIN SETTINGS-----------------------------
 	const Uint32 SDL_INIT_FLAGS = SDL_INIT_VIDEO;
 	const int IMG_INIT_FLAGS = IMG_INIT_PNG;
@@ -36,18 +40,17 @@ namespace Config
 	const int STANDARD_FONT_SIZE = 11;
 	const char * const GAME_FONT = "fonts/FreckleFace.ttf";
 	const int GAME_FONT_SIZE = 30;
-
+	const Color INFO_FONT_COLOR = { 0,0,0 };
+	const Color MENU_FONT_COLOR = { 0xff,0xff,0xff };
 
 
 
 
 
 	//-------------------GAME SETTINGS----------------------------
-	//Player speed in pixels per second
-	const int PLAYER_SPEED = 1000;
-	const int JUMP_HIGHT = 200;
-	const int LEVEL_WIDTH = 80000;
-	const int LEVEL_HEIGHT = 600;
+	
+	const int PLAYER_SPEED = 500; //Player speed in pixels per second
+	const int JUMP_HIGHT = 200; //Jump high in pixels
 	const int INITIAL_LIVES_COUNT = 3;
 
 
