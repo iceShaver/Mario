@@ -13,10 +13,17 @@ SDL_Event Program::event;
 bool Program::quit = false;
 TTF_Font * Program::font;
 List<Object> Program::objects;
+List<Level> Program::levels;
 Player * Program::player;
 Object * Program::background;
 Object * Program::ground;
 Timer Program::deltaTimer;
+Level * Program::loadedLevel;
+//Texture * Program::backgroundTexture;
+//Texture * Program::groundTexture;
+//Texture * Program::wallTexture;
+//Texture * Program::playerTexture;
+List<Texture> Program::textures;
 //SDL_Rect Program::camera;
 bool Program::Init()
 {
@@ -49,13 +56,22 @@ bool Program::Init()
 		error = true;
 	}
 	SDL_RenderSetLogicalSize(renderer, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT);
+	levels.Add(new Level("levels/level1.lvl"));
+	loadedLevel = levels.Get("Default Level");
 	deltaTime = 0;
-	background = new Object(0, 0, "textures/background.png", Object::NonMovable, Object::Virtual, Object::Repeatable);
-	player = new Player(Config::SCREEN_WIDTH/2,Config::SCREEN_HEIGHT/2, "textures/mario.png",Object::Movable , Object::Virtual, Object::NonRepeatable, Object::Transparent, {0xff, 0xff, 0xff});
-	ground = new Object(0, 556, "textures/ground.png", Object::NonMovable, Object::Solid, Object::Repeatable);
+	textures.Add(new Texture("textures/background.png","background") );
+	textures.Add(new Texture("textures/mario.png", "player", Texture::Transparent, { 0xff,0xff,0xff }));
+	textures.Add(new Texture("textures/ground.png", "ground"));
+	textures.Add(new Texture("textures/wall.png", "wall"));
+	textures.Get("wall");
+	background = new Object(0, 0, textures.Get("background"),"background" , Object::NonMovable, Object::Virtual, Object::Repeatable);
+	player = new Player(Config::SCREEN_WIDTH/2,Config::SCREEN_HEIGHT/2, textures.Get("player"),"player",Object::Movable , Object::Virtual, Object::NonRepeatable);
+	ground = new Object(0, 556, textures.Get("ground"),"ground",  Object::NonMovable, Object::Solid, Object::Repeatable);
+	Object * wall = new Object(800, loadedLevel->GetHeight() - 300, textures.Get("wall"));
 	objects.Add(background);
 	objects.Add(ground);
 	objects.Add(player);
+	objects.Add(wall);
 	camera.Follow(player);
 	//SDL_RenderSetScale(renderer, 0.5, 0.5);
 	if (error) return false;
@@ -74,7 +90,7 @@ bool Program::LoadContent()
 	/*background->GetTextureFromFile();
 	player->GetTextureFromFile();
 	ground->GetTextureFromFile();*/
-	objects.ForEach(&Object::GetTextureFromFile);
+	//objects.ForEach(&Object::GetTextureFromFile);
 	return true;
 }
 
@@ -156,10 +172,34 @@ float Program::GetDeltaTime()
 
 void Program::DisplayPlayerXY()
 {
-	Texture xy;
+	
+	//Texture xy;
 	char text[20];
 	sprintf_s(text, 20, "(%d, %d)", player->GetXPos(), player->GetYPos());
-	xy.LoadFromRenderedText(text, { 0,0,0 });
-	xy.Render(Config::SCREEN_WIDTH - xy.GetWidth(), 0);
+	DisplayText(text, Config::SCREEN_WIDTH - 80, 0);
+	//xy.LoadFromRenderedText(text, { 0,0,0 });
+//	xy.Render(Config::SCREEN_WIDTH - xy.GetWidth(), 0);
 	//xy.LoadFromRenderedText()
+}
+
+void Program::DisplayText(const char* text, int x, int y)
+{
+
+	SDL_Surface * tmpSurface = TTF_RenderText_Blended(Program::font, text, {0,0,0});
+	SDL_Texture * texture;
+	if (!tmpSurface)
+	{
+		printf("Unable to create text surface: %s\n", SDL_GetError());
+	}
+	if (!(texture = SDL_CreateTextureFromSurface(Program::renderer, tmpSurface)))
+	{
+		printf("Unable to create text texture. Error: %s\n", SDL_GetError());
+	}
+	int width = tmpSurface->w;
+	int height = tmpSurface->h;
+	SDL_FreeSurface(tmpSurface);
+
+	SDL_Rect renderedRect = { x, y, width, height };
+	SDL_RenderCopyEx(Program::renderer, texture, nullptr, &renderedRect, 0.0, nullptr, SDL_FLIP_NONE);
+	SDL_DestroyTexture(texture);
 }

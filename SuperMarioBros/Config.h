@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
+
 namespace Config
 {
 	//-------------------MAIN SETTINGS-----------------------------
@@ -9,6 +10,9 @@ namespace Config
 	const int IMG_INIT_FLAGS = IMG_INIT_PNG;
 	const char * const WINDOW_TITLE = "Super Mario Bros";
 	const int TEXTURE_FILE_NAME_LENGTH = 128;
+	const int LEVEL_NAME_LENGTH = 256;
+	const int LEVEL_FILE_PATH_LENGTH = 256;
+	const int OBJECT_NAME_LENGTH = 256;
 
 
 
@@ -19,7 +23,7 @@ namespace Config
 	const Uint16 SCREEN_HEIGHT = 600;
 
 	const int WINDOW_POSITION = SDL_WINDOWPOS_UNDEFINED;
-	const Uint32 WINDOW_FLAGS = SDL_WINDOW_FULLSCREEN_DESKTOP;
+	const Uint32 WINDOW_FLAGS = SDL_WINDOW_SHOWN;
 	const Uint32 RENDERER_FLAGS = SDL_RENDERER_ACCELERATED;// | SDL_RENDERER_PRESENTVSYNC;
 	const int RENDERER_DRIVER_INDEX = -1;
 
@@ -37,9 +41,9 @@ namespace Config
 
 	//-------------------GAME SETTINGS----------------------------
 	//Player speed in pixels per second
-	const int PLAYER_SPEED = 400;
+	const int PLAYER_SPEED = 1000;
 	const int JUMP_HIGHT = 200;
-	const int LEVEL_WIDTH = 2000;
+	const int LEVEL_WIDTH = 80000;
 	const int LEVEL_HEIGHT = 600;
 
 

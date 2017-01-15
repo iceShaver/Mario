@@ -3,7 +3,7 @@
 #include <SDL.h>
 #include "Timer.h"
 class FPSGauge :
-	public Texture
+	public Object
 {
 public:
 	FPSGauge();

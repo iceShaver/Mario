@@ -142,10 +142,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="levels\level1.lvl" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Level.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="FPSGauge.cpp" />
     <ClCompile Include="List.cpp" />
@@ -158,6 +160,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="Level.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="FPSGauge.h" />
     <ClInclude Include="List.h" />
@@ -165,6 +168,14 @@
     <ClInclude Include="Program.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="textures\background.png" />
+    <Image Include="textures\dot.bmp" />
+    <Image Include="textures\ground.png" />
+    <Image Include="textures\mario.png" />
+    <Image Include="textures\pom.png" />
+    <Image Include="textures\wall.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

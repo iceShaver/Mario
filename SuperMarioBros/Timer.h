@@ -1,9 +1,10 @@
 #pragma once
 #include "Texture.h"
 #include <SDL.h>
+#include "Object.h"
 
 
-class Timer : public Texture
+class Timer : public Object
 {
 public:
 	Timer();

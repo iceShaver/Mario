@@ -1,5 +1,6 @@
 #pragma once
 #include "Object.h"
+#include <cstring>
 
 //--------------------------ListElement Class----------------------------
 template <class Type> class ListElement
@@ -17,17 +18,17 @@ private:
 };
 
 
-template <class Type>
-ListElement<Type>::ListElement()
+template <class Type> ListElement<Type>::ListElement()
 {
+	printf("New list\n");
+
 	index = 0;
 	nextPtr = nullptr;
 	prevPtr = nullptr;
 	object = nullptr;
 }
 
-template <class Type>
-ListElement<Type>::~ListElement()
+template <class Type> ListElement<Type>::~ListElement()
 {
 	if (object)
 		delete object;
@@ -43,6 +44,7 @@ public:
 	~List();
 	bool Add(Type * object);
 	Type * Get(int index);
+	Type * Get(const char * name);
 	Type * GetLast() const;
 	Type * GetFirst() const;
 	bool ForEach(bool (Type::*function)());
@@ -124,7 +126,16 @@ template<class Type> Type * List<Type>::Get(int index)
 	return nullptr;
 }
 
-
+template <class Type> Type* List<Type>::Get(const char* name)
+{
+	ListElement<Type> * element = firstPtr;
+	while (element != nullptr)
+	{
+		if (strcmp(name, element->object->GetName()) == 0) return element->object;
+		element = element->nextPtr;
+	}
+	return nullptr;
+}
 
 
 template<class Type> Type * List<Type>::GetLast() const
@@ -146,8 +157,7 @@ template<class Type> Type * List<Type>::GetFirst() const
 
 
 
-template <class Type>
-bool List<Type>::ForEach(bool (Type::*function)())
+template <class Type> bool List<Type>::ForEach(bool (Type::*function)())
 {
 	ListElement<Type> * element = firstPtr;
 	if (element)
@@ -192,8 +202,7 @@ template <class Type> bool List<Type>::Delete(int index)
 	return true;
 }
 
-template <class Type>
-ListElement<Type>* List<Type>::getElement(int index)
+template <class Type> ListElement<Type>* List<Type>::getElement(int index)
 {
 	ListElement<Type> * element = firstPtr;
 	while (element != nullptr)

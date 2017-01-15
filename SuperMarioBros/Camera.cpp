@@ -1,9 +1,12 @@
 #include "Camera.h"
-
+#include <cstdio>
+#include "Program.h"
 
 
 Camera::Camera()
 {
+	printf("New camera\n");
+
 	camera = { 0,0,Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT };
 }
 
@@ -24,8 +27,8 @@ void Camera::SetCamera()
 
 	if (camera.x < 0) camera.x = 0;
 	if (camera.y < 0) camera.y = 0;
-	if (camera.x + camera.w > Config::LEVEL_WIDTH) camera.x = Config::LEVEL_WIDTH - camera.w;
-	if (camera.y + camera.h > Config::LEVEL_HEIGHT) camera.y = Config::LEVEL_HEIGHT - camera.h;
+	if (camera.x + camera.w > Program::loadedLevel->GetWidth()) camera.x = Program::loadedLevel->GetWidth() - camera.w;
+	if (camera.y + camera.h > Program::loadedLevel->GetHeight()) camera.y = Program::loadedLevel->GetHeight() - camera.h;
 }
 
 int Camera::GetXPos() const

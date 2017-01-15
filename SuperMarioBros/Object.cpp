@@ -7,32 +7,60 @@
 #include <string.h>
 #include "Camera.h"
 Camera Program::camera;
-Object::Object(int xPos, int yPos, const char* textureFileName, Movability movable, ObjectType objectType, Repeatability repeatability, Transparency transparency, Color transparencyColor)
+//Object::Object(int xPos, int yPos, const char* textureFileName, Movability movable, ObjectType objectType, Repeatability repeatability, Transparency transparency, Color transparencyColor)
+//{
+//	xV = 0;
+//	yV = 0;
+//	width = 0;
+//	height = 0;
+//	texture = nullptr;
+//	this->xPos = xPos;
+//	this->yPos = yPos;
+//	collider.x = xPos;
+//	collider.y = yPos;
+//	strcpy_s(this->texturePath, Config::TEXTURE_FILE_NAME_LENGTH, textureFileName);
+//	this->movable = movable;
+//	this->objectType = objectType;
+//	this->transparency = transparency;
+//	this->transparencyColor = transparencyColor;
+//	flip = SDL_FLIP_NONE;
+//	clip = nullptr;
+//	angle = 0.0;
+//	center = nullptr;
+//	repeatable = repeatability;
+//
+//}
+
+Object::Object(int xPos, int yPos, Texture * texture, const char * name, Movability movable, ObjectType objectType, Repeatability repeatability, ObjectPosition objectPosition)
 {
+	printf("New object\n");
+
 	xV = 0;
 	yV = 0;
-	width = 0;
-	height = 0;
-	texture = nullptr;
+	collider.w = width = texture->GetWidth();
+	collider.h = height = texture->GetHeight();
+	//texture = nullptr;
+	this->objectPosition = objectPosition;
 	this->xPos = xPos;
 	this->yPos = yPos;
 	collider.x = xPos;
 	collider.y = yPos;
-	strcpy_s(this->texturePath, Config::TEXTURE_FILE_NAME_LENGTH, textureFileName);
+	this->texture = texture->GetTexture();//Here is the error, texture is nullptr, WHY???
 	this->movable = movable;
 	this->objectType = objectType;
-	this->transparency = transparency;
-	this->transparencyColor = transparencyColor;
 	flip = SDL_FLIP_NONE;
 	clip = nullptr;
 	angle = 0.0;
 	center = nullptr;
 	repeatable = repeatability;
-
+	strcpy_s(this->name, Config::OBJECT_NAME_LENGTH, name);
 }
 
-Object::Object(int xPos, int yPos, Color textColor, Movability movable, ObjectType objectType)
+
+Object::Object(int xPos, int yPos, ObjectPosition objectPosition, const char * name, Color textColor, Movability movable, ObjectType objectType)
 {
+	printf("New object\n");
+	this->objectPosition = objectPosition;
 	xV = 0;
 	yV = 0;
 	width = 0;
@@ -45,14 +73,16 @@ Object::Object(int xPos, int yPos, Color textColor, Movability movable, ObjectTy
 	//strcpy_s(this->texturePath, Config::TEXTURE_FILE_NAME_LENGTH, nullptr);
 	this->movable = movable;
 	this->objectType = objectType;
-	transparency = NonTransparent;
-	transparencyColor = { 0,0,0 };
+	//transparency = NonTransparent;
+	//transparencyColor = { 0,0,0 };
 	this->textColor = textColor;
 	flip = SDL_FLIP_NONE;
 	clip = nullptr;
 	angle = 0.0;
 	center = nullptr;
 	repeatable = NonRepeatable;
+	strcpy_s(this->name, Config::OBJECT_NAME_LENGTH, name);
+
 
 }
 
@@ -62,30 +92,30 @@ Object::~Object()
 }
 
 
-bool Object::GetTextureFromFile()
-{
-	dump();
-	SDL_Texture * newTexture = nullptr;
-	SDL_Surface * tmpSurface = IMG_Load(texturePath);
-	if (!tmpSurface)
-	{
-		printf("Unable to load image %s. Error: %s\n", texturePath, IMG_GetError());
-		return false;
-	}
-	if (transparency)
-		SDL_SetColorKey(tmpSurface, SDL_TRUE, SDL_MapRGB(tmpSurface->format, transparencyColor.R, transparencyColor.G, transparencyColor.B));
-	if (!(newTexture = SDL_CreateTextureFromSurface(Program::renderer, tmpSurface)))
-	{
-		printf("Unable to create texture from image %s. Error: %s\n", texturePath, SDL_GetError());
-		return false;
-	}
-	collider.w = width = tmpSurface->w;
-	collider.h = height = tmpSurface->h;
-	SDL_FreeSurface(tmpSurface);
-	texture = newTexture;
-	printf("Texture %s loaded\n", texturePath);
-	return false;
-}
+//bool Object::GetTextureFromFile()
+//{
+//	dump();
+//	SDL_Texture * newTexture = nullptr;
+//	SDL_Surface * tmpSurface = IMG_Load(texturePath);
+//	if (!tmpSurface)
+//	{
+//		printf("Unable to load image %s. Error: %s\n", texturePath, IMG_GetError());
+//		return false;
+//	}
+//	if (transparency)
+//		SDL_SetColorKey(tmpSurface, SDL_TRUE, SDL_MapRGB(tmpSurface->format, transparencyColor.R, transparencyColor.G, transparencyColor.B));
+//	if (!(newTexture = SDL_CreateTextureFromSurface(Program::renderer, tmpSurface)))
+//	{
+//		printf("Unable to create texture from image %s. Error: %s\n", texturePath, SDL_GetError());
+//		return false;
+//	}
+//	collider.w = width = tmpSurface->w;
+//	collider.h = height = tmpSurface->h;
+//	SDL_FreeSurface(tmpSurface);
+//	texture = newTexture;
+//	printf("Texture %s loaded\n", texturePath);
+//	return false;
+//}
 
 void Object::dump()
 {
@@ -168,9 +198,18 @@ int Object::GetHeight()
 	return  height;
 }
 
+const char* Object::GetName()
+{
+	return name;
+}
+
 bool Object::Render()
 {
-	SDL_Rect renderedRect = { xPos - Program::camera.GetXPos(), yPos - Program::camera.GetYPos(), width, height };
+	SDL_Rect renderedRect;
+	if (objectPosition == Relative)
+		renderedRect = { static_cast<int>(xPos) - Program::camera.GetXPos(), static_cast<int>(yPos) - Program::camera.GetYPos(), width, height };
+	else
+		renderedRect = { static_cast<int>(xPos), static_cast<int>(yPos), width, height };
 
 	if (clip)
 	{
@@ -181,15 +220,22 @@ bool Object::Render()
 	{
 		SDL_RenderCopyEx(Program::renderer, texture, clip, &renderedRect, angle, center, flip);
 
-		while(renderedRect.x+renderedRect.w<Program::camera.GetXPos() + Program::camera.GetWidth())
+		while (renderedRect.x + renderedRect.w < Program::camera.GetXPos() + Program::camera.GetWidth())
 		{
 			renderedRect.x += renderedRect.w;
 			collider.w += width;
 			SDL_RenderCopyEx(Program::renderer, texture, clip, &renderedRect, angle, center, flip);
 		}
-	}else
+	}
+	else
 		SDL_RenderCopyEx(Program::renderer, texture, clip, &renderedRect, angle, center, flip);
 	return false;
+}
+
+void Object::SetXY(int x, int y)
+{
+	xPos = x;
+	yPos = y;
 }
 
 bool Object::CheckCollision()
@@ -212,7 +258,7 @@ void Object::Move()
 		float yOffset = yV * Program::GetDeltaTime();
 		xPos += xOffset;
 		collider.x = xPos;
-		if (xPos<0 || xPos + width>Config::LEVEL_WIDTH || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+		if (xPos<0 || xPos + width>Program::loadedLevel->GetWidth() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
 		{
 			xPos -= xOffset;
 			collider.x = xPos;
@@ -221,7 +267,7 @@ void Object::Move()
 				if (xOffset > 0)xPos++;
 				else xPos--;
 				collider.x = xPos;
-				if (xPos<0 || xPos + width>Config::LEVEL_WIDTH || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+				if (xPos<0 || xPos + width>Program::loadedLevel->GetWidth() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
 				{
 					if (xOffset > 0)xPos--;
 					else xPos++;
@@ -234,7 +280,7 @@ void Object::Move()
 		yPos += yOffset;
 		collider.y = yPos;
 
-		if (yPos<0 || yPos + height>Config::LEVEL_HEIGHT || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+		if (yPos<0 || yPos + height>Program::loadedLevel->GetHeight() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
 		{
 			yPos -= yOffset;
 			collider.y = yPos;
@@ -243,7 +289,7 @@ void Object::Move()
 				if (yOffset > 0)yPos++;
 				else yPos--;
 				collider.y = yPos;
-				if (yPos<0 || yPos + height>Config::LEVEL_HEIGHT || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
+				if (yPos<0 || yPos + height>Program::loadedLevel->GetHeight() || Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
 				{
 					if (yOffset > 0)yPos--;
 					else yPos++;

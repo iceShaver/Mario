@@ -5,8 +5,10 @@
 
 Timer Program::timer;
 float Program::deltaTime;
-FPSGauge::FPSGauge()
+FPSGauge::FPSGauge() : Object(0, 0, Fixed)
 {
+	printf("New fpsg\n");
+
 	framesCounter = 0;
 	currentFPSFramesTime = 1;
 	currentFPS = 0;
@@ -23,9 +25,10 @@ void FPSGauge::DisplayAverageFPS(SDL_Color color)
 	char text[32];
 	float fps = framesCounter / (averageFPSTimer.GetTime() / 1000.f);
 	sprintf(text, "AVG FPS: %.2f", fps);
-	if (!LoadFromRenderedText(text, color))
+	if (!GetTextureFromText(text, color))
 		printf("Unable to render time texture\n");
-	Render(200, 0);
+	SetXY(200, 0);
+	Render();
 }
 
 void FPSGauge::DisplayCurrentFPS(SDL_Color color)
@@ -33,9 +36,10 @@ void FPSGauge::DisplayCurrentFPS(SDL_Color color)
 	char text[32];
 	currentFPS = 1000*Config::CURRENT_FPS_UPDATE_INTERVAL/currentFPSFramesTime;
 	sprintf(text, "CUR FPS: %d", currentFPS);
-	if (!LoadFromRenderedText(text, color))
+	if (!GetTextureFromText(text, color))
 		printf("Unable to render time texture\n");
-	Render(320, 0);
+	SetXY(320, 0);
+	Render();
 }
 
 void FPSGauge::AverageFPSTimerStart()
@@ -66,9 +70,10 @@ void FPSGauge::DisplayFramesCount(SDL_Color color)
 {
 	char text[32];
 	sprintf(text, "FPS count: %d", framesCounter);
-	if (!LoadFromRenderedText(text, color))
+	if (!GetTextureFromText(text, color))
 		printf("Unable to render time texture\n");
-	Render(80, 0);
+	SetXY(80, 0);
+	Render();
 
 }
 
@@ -76,9 +81,10 @@ void FPSGauge::DisplayFrameTime(SDL_Color color)
 {
 	char text[32];
 	sprintf(text, "%d frames time: %d", Config::CURRENT_FPS_UPDATE_INTERVAL, currentFPSFramesTime);
-	if (!LoadFromRenderedText(text, color))
+	if (!GetTextureFromText(text, color))
 		printf("Unable to render time texture\n");
-	Render(420, 0);
+	SetXY(420, 0);
+	Render();
 }
 
 
@@ -89,7 +95,7 @@ void FPSGauge::DisplayStats()
 	DisplayAverageFPS();
 	DisplayCurrentFPS();
 	DisplayFramesCount();
-	DisplayFrameTime();
+	//DisplayFrameTime();
 }
 
 void FPSGauge::VSync()

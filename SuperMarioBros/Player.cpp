@@ -5,14 +5,20 @@
 #include "Program.h"
 #include "Timer.h"
 #include "math.h"
-Player::Player(int xPos, int yPos, const char* textureFileName, Movability movable, ObjectType objectType,Repeatability repeatability ,Transparency transparency, Color transparencyColor) : Object(xPos, yPos, textureFileName, movable, objectType, repeatability, transparency, transparencyColor)
+#include "Texture.h"
+#include <vector>
+Player::Player(int xPos, int yPos, Texture * texture,const char * name, Movability movable, ObjectType objectType,Repeatability repeatability) : Object(xPos, yPos, texture,name, movable, objectType, repeatability)
 {
+	printf("New player\n");
+
 	jump = false;
 	jumping = false;
 }
 
-Player::Player(int xPos, int yPos, Color textColor, Movability movable, ObjectType objectType) : Object(xPos, yPos, textColor, movable, objectType)
+Player::Player(int xPos, int yPos, ObjectPosition objectPosition,const char * name ,Color textColor, Movability movable, ObjectType objectType) : Object(xPos, yPos,objectPosition, name, textColor, movable, objectType)
 {
+	printf("New player\n");
+
 	jump = false;
 	jumping = false;
 }
@@ -51,19 +57,40 @@ void Player::HandleEvent(SDL_Event & event)
 
 void Player::HandleJump()
 {
+	static int jumpHeight = 0;
+	//Funkcja zmieniaj¹ca siê w czasie (zmieniam yV w czasie)
+	//Przycisk jest triggerem, dzia³a jeœli nie skacze
+
 	if (jump)
 	{
+		jump = false;
+		jumpTimer.Start();
+		yV = -Config::PLAYER_SPEED;
+		if(jumpTimer.GetTime() >= 1000)
+		{
+			yV = Config::PLAYER_SPEED;
+			jump = false;
+		}
 
-		static float zeroHeight = yPos;
+
+
+
+
+
+
+
+
+	/*	static float zeroHeight = yPos;
 			yV = -Config::PLAYER_SPEED;
 		if (zeroHeight - yPos > Config::JUMP_HIGHT)
 		{
 
 			yV = Config::PLAYER_SPEED*0.5;
 			jump = false;
-		}
+		}*/
 
 	}
+
 }
 
 

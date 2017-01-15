@@ -2,12 +2,15 @@
 #include <SDL.h>
 #include <stdio.h>
 #include "Object.h"
-Timer::Timer()
+Timer::Timer() :Object(0,0, Fixed)
 {
+	
 	startTime = 0;
 	pausedTime = 0;
 	paused = false;
 	started = false;
+	printf("New timer\n");
+
 }
 
 
@@ -56,9 +59,9 @@ void Timer::DisplayTime(SDL_Color color)
 	char text[32];
 		float time = GetTime()/1000.f;
 	sprintf(text, "TIME: %.1f", time);
-	if (!LoadFromRenderedText(text, color))
+	if (!GetTextureFromText(text, color))
 		printf("Unable to render time texture\n");
-	Render(0, 0);
+	Render();
 }
 
 

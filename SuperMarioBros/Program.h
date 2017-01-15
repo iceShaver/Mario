@@ -7,6 +7,7 @@
 #include "FPSGauge.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Level.h"
 
 
 class Program
@@ -25,6 +26,7 @@ public:
 	static void SetDeltaTime();
 	static float GetDeltaTime();
 	static void DisplayPlayerXY();
+	static void DisplayText(const char * text, int x, int y);
 	static bool quit;
 	static SDL_Renderer * renderer;
 	static TTF_Font * font;
@@ -32,9 +34,15 @@ public:
 	static Object * background;
 	static Object * ground;
 	static List<Object> objects;
+	static List<Texture> textures;
+	static List<Level> levels;
 	static Timer timer;
 	static Camera camera;
-
+	static Level * loadedLevel;
+	static Texture * groundTexture;
+	static Texture * backgroundTexture;
+	static Texture * playerTexture;
+	static Texture * wallTexture;
 	//static SDL_Rect camera;
 private:
 	//Time of one frame in seconds

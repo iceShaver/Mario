@@ -4,11 +4,29 @@
 #include <SDL_ttf.h>
 #include <stdio.h>
 #include "Program.h"
+#include <string.h>
+
 Texture::Texture()
 {
+	printf("New texture\n");
+	strcpy_s(this->name, Config::OBJECT_NAME_LENGTH, "");
 	texture = nullptr;
 	width = 0;
 	height = 0;
+	transparency = NonTransparent;
+	transparencyColor = { 0,0,0 };
+}
+
+Texture::Texture(const char* path, const char * name, Transparency transparency, Color transparencyColor)
+{
+	strcpy_s(this->name, Config::OBJECT_NAME_LENGTH, name);
+	texture = nullptr;
+	width = 0;
+	height = 0;
+	this->transparency = transparency;
+	this->transparencyColor = transparencyColor;
+	LoadFromFile(path);
+
 }
 
 
@@ -27,6 +45,8 @@ bool Texture::LoadFromFile(const char* path)
 		printf("Unable to load image %s Error: %s\n", path, IMG_GetError());
 		return false;
 	}
+	if (transparency)
+		SDL_SetColorKey(tmpSurface, SDL_TRUE, SDL_MapRGB(tmpSurface->format, transparencyColor.R, transparencyColor.G, transparencyColor.B));
 	if(!(texture = SDL_CreateTextureFromSurface(Program::renderer, tmpSurface)))
 	{
 		SDL_FreeSurface(tmpSurface);
@@ -35,6 +55,7 @@ bool Texture::LoadFromFile(const char* path)
 	}
 	width = tmpSurface->w;
 	height = tmpSurface->h;
+	printf("Texture %s loaded\n", path);
 	SDL_FreeSurface(tmpSurface);
 	return true;
 
@@ -88,16 +109,21 @@ void Texture::SetAlpha(Uint8 alpha)
 	SDL_SetTextureAlphaMod(texture, alpha);
 }
 
-void Texture::Render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) const
+const char* Texture::GetName()
 {
-	SDL_Rect renderRect = { x, y, width, height };
-	if(clip)
-	{
-		renderRect.w = clip->w;
-		renderRect.h = clip->h;
-	}
-	SDL_RenderCopyEx(Program::renderer, texture, clip, &renderRect, angle, center, flip);
+	return name;
 }
+
+//void Texture::Render(int x, int y, SDL_Rect* clip, double angle, SDL_Point* center, SDL_RendererFlip flip) const
+//{
+//	SDL_Rect renderRect = { x, y, width, height };
+//	if(clip)
+//	{
+//		renderRect.w = clip->w;
+//		renderRect.h = clip->h;
+//	}
+//	SDL_RenderCopyEx(Program::renderer, texture, clip, &renderRect, angle, center, flip);
+//}
 
 int Texture::GetWidth() const
 {
@@ -107,4 +133,9 @@ int Texture::GetWidth() const
 int Texture::GetHeight() const
 {
 	return height;
+}
+
+SDL_Texture* Texture::GetTexture() const
+{
+	return texture;
 }
