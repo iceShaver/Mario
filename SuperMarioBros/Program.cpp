@@ -56,9 +56,16 @@ bool Program::Init()
 		error = true;
 	}
 	SDL_RenderSetLogicalSize(renderer, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT);
-	levels.Add(new Level("levels/level1.lvl"));
-	loadedLevel = levels.Get("Default Level");
 	deltaTime = 0;
+
+	
+	levels.Add(new Level("levels/level1.lvl"));
+
+	loadedLevel = levels.Get("Default Level");
+
+
+
+
 	textures.Add(new Texture("textures/background.png","background") );
 	textures.Add(new Texture("textures/mario.png", "player", Texture::Transparent, { 0xff,0xff,0xff }));
 	textures.Add(new Texture("textures/ground.png", "ground"));

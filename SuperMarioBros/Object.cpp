@@ -54,6 +54,8 @@ Object::Object(int xPos, int yPos, Texture * texture, const char * name, Movabil
 	center = nullptr;
 	repeatable = repeatability;
 	strcpy_s(this->name, Config::OBJECT_NAME_LENGTH, name);
+	prevXPos = xPos;
+	prevYPos = yPos;
 }
 
 
@@ -82,6 +84,8 @@ Object::Object(int xPos, int yPos, ObjectPosition objectPosition, const char * n
 	center = nullptr;
 	repeatable = NonRepeatable;
 	strcpy_s(this->name, Config::OBJECT_NAME_LENGTH, name);
+	prevXPos = xPos;
+	prevYPos = yPos;
 
 
 }
@@ -178,6 +182,7 @@ bool Object::CheckCollisionWithPlayer()
 	return false;
 }
 
+
 int Object::GetXPos()
 {
 	return xPos;
@@ -253,7 +258,10 @@ void Object::HandleEvent(SDL_Event & event)
 
 void Object::Move()
 {
+	prevXPos = xPos;
+	prevYPos = yPos;
 	if (movable && (xV || yV)) {
+
 		float xOffset = xV * Program::GetDeltaTime();
 		float yOffset = yV * Program::GetDeltaTime();
 		xPos += xOffset;

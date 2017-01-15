@@ -17,5 +17,6 @@ private:
 	Timer jumpTimer;
 	bool jump;
 	bool jumping;
+	int curY;
 };
 

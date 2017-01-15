@@ -1,6 +1,7 @@
 #include "FPSGauge.h"
 #include "Program.h"
 #include <SDL.h>
+#include <stdio.h>
 
 FPSGauge Program::fpsGauge;
 

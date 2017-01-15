@@ -27,7 +27,7 @@ namespace Config
 	const Uint32 RENDERER_FLAGS = SDL_RENDERER_ACCELERATED;// | SDL_RENDERER_PRESENTVSYNC;
 	const int RENDERER_DRIVER_INDEX = -1;
 
-	const bool FPS_LOCK = false;
+	const bool FPS_LOCK = true;
 	const int FRAMERATE = 60;
 	const int CURRENT_FPS_UPDATE_INTERVAL = 30;//Interval between the following FPS measurements
 	const double VSYNC_REQUIRED_FRAME_TIME = 1000.f / (double)FRAMERATE;

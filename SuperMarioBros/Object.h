@@ -58,6 +58,8 @@ protected:
 	char texturePath[Config::TEXTURE_FILE_NAME_LENGTH];
 	float xPos;
 	float yPos;
+	float prevXPos;
+	float prevYPos;
 	int width;
 	int height;
 	char name[Config::OBJECT_NAME_LENGTH];
