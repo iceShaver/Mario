@@ -13,7 +13,6 @@ public:
 	void Stop();
 	void Pause();
 	void Resume();
-	void DisplayTime(SDL_Color color = { 0,0,0 });
 	Uint32 GetTime() const;
 	Uint32 GetSeconds() const;
 	bool IsStarted() const;

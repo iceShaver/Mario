@@ -13,13 +13,18 @@ int main(int argc, char* argv[])
 	while (!Program::quit)
 	{
 		Program::HandleEvent();
-		Program::HandleAction();
-		Program::camera.SetCamera();
+		if (Program::IsGameStarted()) {
+			Program::HandleAction();
+			Program::camera.SetCamera();
+		}
 		Program::ClearRenderer();
-		Program::Render();
-		Program::fpsGauge.DisplayStats();
-		Program::timer.DisplayTime();
-		Program::DisplayPlayerXY();
+		if (Program::IsGameStarted())
+		{
+			Program::Render();
+			Program::DisplayStats();
+		}else
+		Program::DisplayMenu();
+		Program::DisplayDiagnosticInfo();
 		SDL_RenderPresent(Program::renderer);
 		Program::fpsGauge.FramesCounterIncrease();
 		Program::fpsGauge.SetDeltaTime();

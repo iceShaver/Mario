@@ -8,19 +8,17 @@ class FPSGauge :
 public:
 	FPSGauge();
 	~FPSGauge();
-	void DisplayAverageFPS(SDL_Color color = { 0,0,0 });
-	void DisplayCurrentFPS(SDL_Color color = { 0,0,0 });
-	void DisplayFramesCount(SDL_Color color = { 0,0,0 });
-	void DisplayFrameTime(SDL_Color color = { 0,0,0 });
+	float GetAverageFPS();
+	float GetCurrentFPS();
+	int GetFramesCount();
 	void AverageFPSTimerStart();
 	void FramesCounterIncrease();
 	void SetDeltaTime();
-	void DisplayStats();
 	void VSync();
 
 
 private:
-	Uint32 currentFPSFramesTime;
+	float currentFPSFramesTime;
 	Uint32 framesCounter;
 	Timer averageFPSTimer;
 	Timer currentFPSTimer;

@@ -139,7 +139,7 @@ void Object::dump()
 bool Object::GetTextureFromText(const char* text, SDL_Color textColor)
 {
 	dump();
-	SDL_Surface * tmpSurface = TTF_RenderText_Blended(Program::font, text, textColor);
+	SDL_Surface * tmpSurface = TTF_RenderText_Blended(Program::standardFont, text, textColor);
 	if (!tmpSurface)
 	{
 		printf("Unable to create text surface: %s\n", SDL_GetError());

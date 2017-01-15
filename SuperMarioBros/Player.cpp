@@ -6,7 +6,6 @@
 #include "Timer.h"
 #include "math.h"
 #include "Texture.h"
-#include <vector>
 Player::Player(int xPos, int yPos, Texture * texture, const char * name, Movability movable, ObjectType objectType, Repeatability repeatability) : Object(xPos, yPos, texture, name, movable, objectType, repeatability)
 {
 	printf("New player\n");
@@ -15,6 +14,7 @@ Player::Player(int xPos, int yPos, Texture * texture, const char * name, Movabil
 	jumping = false;
 	yV = Config::PLAYER_SPEED;
 	curY = yPos;
+	this->yPos = yPos - height;
 
 }
 
@@ -92,6 +92,19 @@ void Player::HandleJump()
 		}
 	}
 
+}
+
+void Player::Reset()
+{
+	jump = false;
+	jumping = false;
+	yV = Config::PLAYER_SPEED;
+	curY = yPos;
+	xV = 0;
+	collider.x = xPos = Program::loadedLevel->GetStartPlayerXPos();
+	collider.y = yPos = Program::loadedLevel->GetGroundLevel()-height;
+	prevXPos = xPos;
+	prevYPos = yPos;
 }
 
 

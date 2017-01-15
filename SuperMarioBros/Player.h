@@ -12,6 +12,7 @@ public:
 	~Player();
 	void HandleEvent(SDL_Event & event) override;
 	void HandleJump();
+	void Reset();
 
 private:
 	Timer jumpTimer;

@@ -24,15 +24,18 @@ namespace Config
 
 	const int WINDOW_POSITION = SDL_WINDOWPOS_UNDEFINED;
 	const Uint32 WINDOW_FLAGS = SDL_WINDOW_SHOWN;
-	const Uint32 RENDERER_FLAGS = SDL_RENDERER_ACCELERATED;// | SDL_RENDERER_PRESENTVSYNC;
+	const Uint32 RENDERER_FLAGS = SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC;
 	const int RENDERER_DRIVER_INDEX = -1;
 
-	const bool FPS_LOCK = true;
+	const bool FPS_LOCK = false;
 	const int FRAMERATE = 60;
 	const int CURRENT_FPS_UPDATE_INTERVAL = 30;//Interval between the following FPS measurements
-	const double VSYNC_REQUIRED_FRAME_TIME = 1000.f / (double)FRAMERATE;
+	const double VSYNC_REQUIRED_FRAME_TIME = 1000.f / static_cast<double>(FRAMERATE);
 
-	const char * const FONT = "OpenSans.ttf";
+	const char * const STANDARD_FONT = "fonts/OpenSans.ttf";
+	const int STANDARD_FONT_SIZE = 11;
+	const char * const GAME_FONT = "fonts/FreckleFace.ttf";
+	const int GAME_FONT_SIZE = 30;
 
 
 

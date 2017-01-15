@@ -11,7 +11,8 @@ SDL_Window * Program::window;
 SDL_Renderer * Program::renderer;
 SDL_Event Program::event;
 bool Program::quit = false;
-TTF_Font * Program::font;
+TTF_Font * Program::standardFont;
+TTF_Font * Program::gameFont;
 List<Object> Program::objects;
 List<Level> Program::levels;
 Player * Program::player;
@@ -19,6 +20,9 @@ Object * Program::background;
 Object * Program::ground;
 Timer Program::deltaTimer;
 Level * Program::loadedLevel;
+int Program::remainingTime;
+bool Program::gameStarted;
+Menu * Program::menu;
 //Texture * Program::backgroundTexture;
 //Texture * Program::groundTexture;
 //Texture * Program::wallTexture;
@@ -60,19 +64,16 @@ bool Program::Init()
 
 	
 	levels.Add(new Level("levels/level1.lvl"));
-
 	loadedLevel = levels.Get("Default Level");
 
 
-
-
 	textures.Add(new Texture("textures/background.png","background") );
-	textures.Add(new Texture("textures/mario.png", "player", Texture::Transparent, { 0xff,0xff,0xff }));
-	textures.Add(new Texture("textures/ground.png", "ground"));
+	textures.Add(new Texture("textures/marioTexture.png", "player", Texture::Transparent, { 0xff,0xff,0xff }));
+	textures.Add(new Texture("textures/ground.png", "ground", Texture::Transparent, {0xff, 0xff, 0xff}));
 	textures.Add(new Texture("textures/wall.png", "wall"));
 	textures.Get("wall");
 	background = new Object(0, 0, textures.Get("background"),"background" , Object::NonMovable, Object::Virtual, Object::Repeatable);
-	player = new Player(Config::SCREEN_WIDTH/2,Config::SCREEN_HEIGHT/2, textures.Get("player"),"player",Object::Movable , Object::Virtual, Object::NonRepeatable);
+	player = new Player(loadedLevel->GetStartPlayerXPos(),loadedLevel->GetGroundLevel(), textures.Get("player"),"player",Object::Movable , Object::Virtual, Object::NonRepeatable);
 	ground = new Object(0, 556, textures.Get("ground"),"ground",  Object::NonMovable, Object::Solid, Object::Repeatable);
 	Object * wall = new Object(800, loadedLevel->GetHeight() - 300, textures.Get("wall"));
 	objects.Add(background);
@@ -80,6 +81,9 @@ bool Program::Init()
 	objects.Add(player);
 	objects.Add(wall);
 	camera.Follow(player);
+	gameStarted = false;
+	menu = new Menu();
+	menu->SetMenu(Menu::None);
 	//SDL_RenderSetScale(renderer, 0.5, 0.5);
 	if (error) return false;
 	return true;
@@ -89,7 +93,12 @@ bool Program::Init()
 
 bool Program::LoadContent()
 {
-	if(!(font = TTF_OpenFont(Config::FONT, 12)))
+	if(!(standardFont = TTF_OpenFont(Config::STANDARD_FONT, Config::STANDARD_FONT_SIZE)))
+	{
+		printf("Unable to load font: %s\n", TTF_GetError());
+		return false;
+	}
+	if (!(gameFont = TTF_OpenFont(Config::GAME_FONT, Config::GAME_FONT_SIZE)))
 	{
 		printf("Unable to load font: %s\n", TTF_GetError());
 		return false;
@@ -107,6 +116,7 @@ void Program::Render()
 
 
 	//player->Render();
+
 	objects.ForEach(&Object::Render);
 	//player->Render();
 }
@@ -117,7 +127,7 @@ void Program::Exit()
 	//delete background;
 	//delete player;
 	//delete ground;
-	TTF_CloseFont(font);
+	TTF_CloseFont(standardFont);
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
@@ -147,20 +157,51 @@ void Program::HandleEvent()
 				break;
 			default:break;
 			}
-		player->HandleEvent(event);
+		if (gameStarted)
+			player->HandleEvent(event);
+			menu->HandleEvent(event);
+
 	}
 }
+
+bool Program::EndTime()
+{
+	if (remainingTime <= 0) return true;
+	return false;
+}
+
+void Program::CountRemainingTime()
+{
+	remainingTime = loadedLevel->GetTime() - timer.GetTime();
+}
+
+
 
 void Program::HandleAction()
 {
 	//objects.GetLast()->Move();
-	player->HandleJump();
-	player->Move();
+
+		player->HandleJump();
+		player->Move();
+		CountRemainingTime();
+		if (EndTime()) {
+			gameStarted = false;
+			menu->SetMenu(Menu::Lose);
+			EndGame();
+		}
+		if (player->GetXPos() >= loadedLevel->GetEndXPos())
+		{
+			gameStarted = false;
+			menu->SetMenu(Menu::Win);
+			EndGame();
+		}
+
+
 }
 
 void Program::ClearRenderer()
 {
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0);
+	SDL_SetRenderDrawColor(renderer, 0x88, 0xaa, 0xff, 0);
 	SDL_RenderClear(renderer);
 }
 
@@ -177,22 +218,11 @@ float Program::GetDeltaTime()
 	return deltaTime;
 }
 
-void Program::DisplayPlayerXY()
-{
-	
-	//Texture xy;
-	char text[20];
-	sprintf_s(text, 20, "(%d, %d)", player->GetXPos(), player->GetYPos());
-	DisplayText(text, Config::SCREEN_WIDTH - 80, 0);
-	//xy.LoadFromRenderedText(text, { 0,0,0 });
-//	xy.Render(Config::SCREEN_WIDTH - xy.GetWidth(), 0);
-	//xy.LoadFromRenderedText()
-}
 
-void Program::DisplayText(const char* text, int x, int y)
-{
 
-	SDL_Surface * tmpSurface = TTF_RenderText_Blended(Program::font, text, {0,0,0});
+void Program::DisplayText(const char* text, int x, int y, Texture::Color color, TTF_Font * font)
+{
+	SDL_Surface * tmpSurface = TTF_RenderUTF8_Blended(font, text, { color.R, color.G, color.B });
 	SDL_Texture * texture;
 	if (!tmpSurface)
 	{
@@ -209,4 +239,49 @@ void Program::DisplayText(const char* text, int x, int y)
 	SDL_Rect renderedRect = { x, y, width, height };
 	SDL_RenderCopyEx(Program::renderer, texture, nullptr, &renderedRect, 0.0, nullptr, SDL_FLIP_NONE);
 	SDL_DestroyTexture(texture);
+}
+
+void Program::DisplayRemainingTime()
+{
+	char text[64];
+	sprintf_s(text, 64, "Pozostały czas: %d", remainingTime);
+	DisplayText(text, 0, 20, {0xda, 0xa5, 0x20}, gameFont);
+}
+
+void Program::DisplayDiagnosticInfo()
+{
+	char text[256];
+	sprintf_s(text, 256, "AVG FPS: %.2f || CUR FPS: %.2f || Frames Count: %d || Time: %.2f || Player position: (%d,%d)", fpsGauge.GetAverageFPS(), fpsGauge.GetCurrentFPS(), fpsGauge.GetFramesCount(), (timer.GetTime() / 1000.f), player->GetXPos(), player->GetYPos());
+	DisplayText(text, 0, 0);
+	
+
+}
+
+void Program::DisplayStats()
+{
+		DisplayRemainingTime();
+}
+
+void Program::DisplayMenu()
+{
+	menu->DisplayMenu();
+	//gameStarted = true;
+}
+
+void Program::StartTheGame()
+{
+	player->Reset();
+	gameStarted = true;
+	timer.Start();
+}
+
+void Program::EndGame()
+{
+	player->Reset();
+}
+
+
+bool Program::IsGameStarted()
+{
+	return gameStarted;
 }

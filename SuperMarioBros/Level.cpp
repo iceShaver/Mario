@@ -86,7 +86,7 @@ bool Level::readFromFile(const char* path)
 	if (strcmp(name, "\n") == 0)
 		strcpy_s(name, Config::LEVEL_NAME_LENGTH, "");
 	fscanf(file, "%d%d%d%d%d%d%d", &width, &height, &time, &startPlayerXPos, &startPlayerYPos, &endXPos, &groundLevel);
-
+	groundLevel = height - groundLevel;
 	/*while(feof(file))
 	{
 		
