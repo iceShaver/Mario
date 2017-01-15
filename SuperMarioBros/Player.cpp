@@ -65,8 +65,7 @@ void Player::HandleEvent(SDL_Event & event)
 
 void Player::HandleJump()
 {
-	//Funkcja zmieniaj¹ca siê w czasie (zmieniam yV w czasie)
-	//Przycisk jest triggerem, dzia³a jeœli nie skacze
+
 	if (jump)
 	{
 		static bool down;
@@ -92,36 +91,6 @@ void Player::HandleJump()
 			down = false;
 		}
 	}
-
-
-
-
-
-
-	/*	static float zeroHeight = yPos;
-			yV = -Config::PLAYER_SPEED;
-		if (zeroHeight - yPos > Config::JUMP_HIGHT)
-		{
-
-			yV = Config::PLAYER_SPEED*0.5;
-			jump = false;
-		}*/
-
-		//}
-		//if (jumpTimer.GetTime() >= 1000 && jumping)
-		//{
-		//	jumpTimer.Stop();
-		//	yV = Config::PLAYER_SPEED;
-		//	jump = false;
-		//	//jumping = true;
-		//	Player::SetXY(GetXPos(), GetYPos() + 1);
-		//	if (Program::objects.ForEach(&Object::CheckCollisionWithPlayer))
-		//	{
-		//		Player::SetXY(GetXPos(), GetYPos() - 1.1);
-		//		jumping = false;
-		//		jump = false;
-		//	}
-		//}
 
 }
 
